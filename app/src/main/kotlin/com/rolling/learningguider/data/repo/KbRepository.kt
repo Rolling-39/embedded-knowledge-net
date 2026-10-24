@@ -14,8 +14,11 @@ import com.rolling.learningguider.data.merge.Merger
 import com.rolling.learningguider.data.merge.UserState
 import com.rolling.learningguider.data.model.BuiltinData
 import com.rolling.learningguider.data.model.EffectiveData
+import com.rolling.learningguider.data.model.Job
 import com.rolling.learningguider.data.model.JobState
+import com.rolling.learningguider.data.model.LearnPath
 import com.rolling.learningguider.data.model.ResourceItem
+import com.rolling.learningguider.data.model.Skill
 import com.rolling.learningguider.data.model.SkillDone
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,6 +79,11 @@ class KbRepository(
         scope.launch {
             userState.collect { _effective.value = Merger.buildEffective(builtin, it) }
         }
+        scope.launch {
+            val t = db.stateDao().kv(KV_THEME)?.value ?: ""
+            val r = db.stateDao().kv(KV_REDUCE)?.value == "1"
+            _prefs.value = Prefs(t, r)
+        }
     }
 
     /** 学习状态（M2+ 界面用）：技能/岗位状态与岗位进度 */
@@ -83,6 +91,121 @@ class KbRepository(
         db.stateDao().skillDoneFlow().map { list -> list.associate { it.skillId to SkillDone(it.st, it.note, it.updated, it.startDate, it.goalDate) } }
     val jobState: Flow<Map<String, JobState>> =
         db.stateDao().jobStateFlow().map { list -> list.associate { it.jobId to JobState(it.st, it.updated) } }
+    val progressFlow: Flow<Map<String, com.rolling.learningguider.data.model.ProgressEntry>> =
+        db.stateDao().progressFlow().map { list ->
+            list.associate { it.jobId to com.rolling.learningguider.data.model.ProgressEntry(it.jobId, it.mastery, it.done, it.note) }
+        }
+    val userRecordsFlow: Flow<List<com.rolling.learningguider.data.db.UserRecordEntity>> = db.userDao().recordsFlow()
+
+    /* ============== 偏好 ============== */
+
+    data class Prefs(val theme: String = "", val reduceMotion: Boolean = false)
+
+    private val _prefs = MutableStateFlow(Prefs())
+    val prefs: StateFlow<Prefs> = _prefs.asStateFlow()
+
+    /* ============== 状态写操作 ============== */
+
+    suspend fun setSkillStatus(id: String, st: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().skillDoneOf(id)
+        val updated = if (st == "learning" && (cur?.updated ?: 0L) == 0L) System.currentTimeMillis() else cur?.updated ?: 0L
+        db.stateDao().upsertSkillDone(
+            listOf(SkillDoneEntity(id, st, cur?.note ?: "", updated, cur?.startDate ?: "", cur?.goalDate ?: "")),
+        )
+    }
+
+    suspend fun setSkillNote(id: String, note: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().skillDoneOf(id)
+        db.stateDao().upsertSkillDone(
+            listOf(SkillDoneEntity(id, cur?.st ?: "none", note, cur?.updated ?: 0L, cur?.startDate ?: "", cur?.goalDate ?: "")),
+        )
+    }
+
+    suspend fun setSkillStartDate(id: String, date: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().skillDoneOf(id)
+        db.stateDao().upsertSkillDone(
+            listOf(SkillDoneEntity(id, cur?.st ?: "none", cur?.note ?: "", cur?.updated ?: 0L, date, cur?.goalDate ?: "")),
+        )
+    }
+
+    suspend fun setSkillGoalDate(id: String, date: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().skillDoneOf(id)
+        db.stateDao().upsertSkillDone(
+            listOf(SkillDoneEntity(id, cur?.st ?: "none", cur?.note ?: "", cur?.updated ?: 0L, cur?.startDate ?: "", date)),
+        )
+    }
+
+    suspend fun setJobStatus(id: String, st: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().jobStateOf(id)
+        val updated = if (st == "learning" && (cur?.updated ?: 0L) == 0L) System.currentTimeMillis() else cur?.updated ?: 0L
+        db.stateDao().upsertJobState(listOf(JobStateEntity(id, st, updated)))
+    }
+
+    suspend fun setJobNote(jobId: String, note: String) = withContext(Dispatchers.IO) {
+        val cur = db.stateDao().progressOf(jobId)
+        db.stateDao().upsertProgress(
+            listOf(ProgressEntity(jobId, cur?.mastery ?: 0, cur?.done ?: false, note)),
+        )
+    }
+
+    /* ============== 记录删除 / 恢复 ==============
+     * 与网页版不同：删除=纯墓碑（不做路径手术）——合并层会把不存在的技能从路径、
+     * 把缺失岗位的路径自动过滤掉，恢复即删墓碑，行为等价且完全可逆；导出后网页版
+     * 的 buildEffective 同样按过滤处理，互导语义一致。 */
+
+    suspend fun deleteRecord(kind: String, id: String) = withContext(Dispatchers.IO) {
+        val payload: JsonObject = when (kind) {
+            KIND_SKILL -> {
+                val def = builtin.skills[id]
+                if (def != null) tombstone(Merger.json.encodeToJsonElement(Skill.serializer(), def).jsonObject)
+                else tombstone(Merger.json.encodeToJsonElement(Skill.serializer(), _effective.value.skills[id] ?: Skill(name = id)).jsonObject, user = true)
+            }
+            KIND_PATH -> {
+                val def = builtin.paths.firstOrNull { it.id == id }
+                if (def != null) tombstone(Merger.json.encodeToJsonElement(LearnPath.serializer(), def).jsonObject)
+                else tombstone(Merger.json.encodeToJsonElement(LearnPath.serializer(), _effective.value.paths.firstOrNull { it.id == id } ?: LearnPath(id = id)).jsonObject, user = true)
+            }
+            else -> {
+                val def = builtin.jobs[id]
+                if (def != null) tombstone(Merger.json.encodeToJsonElement(Job.serializer(), def).jsonObject)
+                else tombstone(Merger.json.encodeToJsonElement(Job.serializer(), _effective.value.jobs[id] ?: Job(id = id)).jsonObject, user = true)
+            }
+        }
+        db.userDao().upsertRecords(
+            listOf(UserRecordEntity(id, kind, payload.flag("user"), true, payload.toString())),
+        )
+    }
+
+    suspend fun restoreRecord(id: String) = withContext(Dispatchers.IO) { db.userDao().deleteRecord(id) }
+
+    suspend fun deleteResource(id: String) = withContext(Dispatchers.IO) { db.userDao().deleteResource(id) }
+
+    /** 清空全部用户数据（内置内容保留，双确认后调用） */
+    suspend fun clearAll() = withContext(Dispatchers.IO) {
+        db.userDao().clearRecords()
+        db.userDao().clearResources()
+        db.stateDao().clearSkillDone()
+        db.stateDao().clearJobState()
+        db.stateDao().clearProgress()
+    }
+
+    private fun tombstone(base: JsonObject, user: Boolean = false): JsonObject =
+        JsonObject(
+            base.toMap() + mapOf(
+                "deleted" to kotlinx.serialization.json.JsonPrimitive(true),
+                *(if (user) arrayOf("user" to kotlinx.serialization.json.JsonPrimitive(true)) else emptyArray()),
+            ),
+        )
+
+    suspend fun setTheme(mode: String) = withContext(Dispatchers.IO) {
+        db.stateDao().putKv(com.rolling.learningguider.data.db.KvEntity(KV_THEME, mode))
+        _prefs.value = _prefs.value.copy(theme = mode)
+    }
+
+    suspend fun setReduceMotion(on: Boolean) = withContext(Dispatchers.IO) {
+        db.stateDao().putKv(com.rolling.learningguider.data.db.KvEntity(KV_REDUCE, if (on) "1" else "0"))
+        _prefs.value = _prefs.value.copy(reduceMotion = on)
+    }
 
     /* ============== 导入 / 导出 ============== */
 
@@ -136,9 +259,9 @@ class KbRepository(
         val dao = db.userDao()
         dao.clearRecords()
         dao.upsertRecords(
-            s.skillRecords.map { (id, o) -> UserRecordEntity(id, KIND_SKILL, flag(o, "user"), flag(o, "deleted"), o.toString()) } +
-                s.pathRecords.map { (id, o) -> UserRecordEntity(id, KIND_PATH, flag(o, "user"), flag(o, "deleted"), o.toString()) } +
-                s.jobRecords.map { (id, o) -> UserRecordEntity(id, KIND_JOB, flag(o, "user"), flag(o, "deleted"), o.toString()) },
+            s.skillRecords.map { (id, o) -> UserRecordEntity(id, KIND_SKILL, o.flag("user"), o.flag("deleted"), o.toString()) } +
+                s.pathRecords.map { (id, o) -> UserRecordEntity(id, KIND_PATH, o.flag("user"), o.flag("deleted"), o.toString()) } +
+                s.jobRecords.map { (id, o) -> UserRecordEntity(id, KIND_JOB, o.flag("user"), o.flag("deleted"), o.toString()) },
         )
         dao.clearResources()
         dao.upsertResources(s.userResources.map { UserResourceEntity(it.id, it.cat, it.n, it.d) })
@@ -155,8 +278,8 @@ class KbRepository(
         state.putKv(com.rolling.learningguider.data.db.KvEntity(KV_ANIMOFF, s.animoff))
     }
 
-    private fun flag(o: JsonObject, name: String): Boolean =
-        (o[name] as? kotlinx.serialization.json.JsonPrimitive)?.let { it.booleanOrNull ?: false } ?: false
+    private fun JsonObject.flag(name: String): Boolean =
+        (this[name] as? kotlinx.serialization.json.JsonPrimitive)?.let { it.booleanOrNull ?: false } ?: false
 
     companion object {
         const val BUILTIN_ASSET = "builtin.json"

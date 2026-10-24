@@ -84,6 +84,15 @@ interface UserDao {
 
     @Query("DELETE FROM user_resources")
     suspend fun clearResources()
+
+    @Query("SELECT * FROM user_records WHERE id = :id")
+    suspend fun record(id: String): UserRecordEntity?
+
+    @Query("DELETE FROM user_records WHERE id = :id")
+    suspend fun deleteRecord(id: String)
+
+    @Query("DELETE FROM user_resources WHERE id = :id")
+    suspend fun deleteResource(id: String)
 }
 
 @Dao
@@ -129,6 +138,15 @@ interface StateDao {
 
     @Upsert
     suspend fun putKv(item: KvEntity)
+
+    @Query("SELECT * FROM skill_done WHERE skillId = :id")
+    suspend fun skillDoneOf(id: String): SkillDoneEntity?
+
+    @Query("SELECT * FROM job_state WHERE jobId = :id")
+    suspend fun jobStateOf(id: String): JobStateEntity?
+
+    @Query("SELECT * FROM job_progress WHERE jobId = :jobId")
+    suspend fun progressOf(jobId: String): ProgressEntity?
 }
 
 @Database(

@@ -1,0 +1,127 @@
+package com.rolling.learningguider.ui.library
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.rolling.learningguider.ui.AppViewModel
+import com.rolling.learningguider.ui.UiState
+import com.rolling.learningguider.ui.icons.AppIcons
+import kotlinx.coroutines.launch
+
+/** 知识库：技能 / 岗位 / 路径 / 资源 四分页 + 搜索 + 详情弹层 */
+@Composable
+fun LibraryScreen(vm: AppViewModel) {
+    val ui by vm.ui.collectAsState()
+    var query by rememberSaveable { mutableStateOf("") }
+    val pagerState = rememberPagerState { 4 }
+    val scope = rememberCoroutineScope()
+
+    // 弹层状态：当前打开的技能 / 岗位 / 路径
+    var sheetSkill by rememberSaveable { mutableStateOf<String?>(null) }
+    var sheetJob by rememberSaveable { mutableStateOf<String?>(null) }
+    var sheetPath by rememberSaveable { mutableStateOf<String?>(null) }
+
+    Column(Modifier.fillMaxSize()) {
+        TabRow(selectedTabIndex = pagerState.currentPage) {
+            listOf("技能", "岗位", "路径", "资源").forEachIndexed { i, title ->
+                Tab(
+                    selected = pagerState.currentPage == i,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(i) } },
+                    text = { Text(title) },
+                )
+            }
+        }
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            placeholder = { Text("搜索${listOf("技能", "岗位", "路径", "资源")[pagerState.currentPage]}…", style = MaterialTheme.typography.bodyMedium) },
+            leadingIcon = { Icon(AppIcons.Search, contentDescription = null) },
+            trailingIcon = {
+                if (query.isNotEmpty()) {
+                    IconButton(onClick = { query = "" }) { Icon(AppIcons.Close, contentDescription = "清空") }
+                }
+            },
+            singleLine = true,
+            shape = MaterialTheme.shapes.extraLarge,
+        )
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+            when (page) {
+                0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord)
+                1 -> JobListPage(ui, query, onJobClick = { sheetJob = it }, onRestore = vm::restoreRecord)
+                2 -> PathListPage(ui, query, onPathClick = { sheetPath = it }, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord)
+                else -> ResourceListPage(ui, query, onDeleteResource = { vm.deleteResource(it) })
+            }
+        }
+    }
+
+    sheetSkill?.let { id ->
+        if (ui.effective.skills.containsKey(id)) {
+            SkillDetailSheet(
+                skillId = id,
+                ui = ui,
+                onOpenSkill = { sheetSkill = it; sheetJob = null; sheetPath = null },
+                onDelete = { vm.deleteRecord("skill", id); sheetSkill = null },
+                onDismiss = { sheetSkill = null },
+                onSetStatus = { st -> vm.setSkillStatus(id, st) },
+                onNoteChange = { vm.setSkillNote(id, it) },
+                onStartDate = { vm.setSkillStartDate(id, it) },
+                onGoalDate = { vm.setSkillGoalDate(id, it) },
+            )
+        } else sheetSkill = null
+    }
+    sheetJob?.let { id ->
+        if (ui.effective.jobs.containsKey(id)) {
+            JobDetailSheet(
+                jobId = id,
+                ui = ui,
+                onOpenSkill = { sheetSkill = it; sheetJob = null },
+                onDelete = { vm.deleteRecord("job", id); sheetJob = null },
+                onDismiss = { sheetJob = null },
+                onSetStatus = { st -> vm.setJobStatus(id, st) },
+                onNoteChange = { vm.setJobNote(id, it) },
+            )
+        } else sheetJob = null
+    }
+    sheetPath?.let { id ->
+        val path = ui.effective.paths.firstOrNull { it.id == id }
+        if (path != null) {
+            PathDetailSheet(
+                path = path,
+                ui = ui,
+                onOpenSkill = { sheetSkill = it; sheetPath = null },
+                onDismiss = { sheetPath = null },
+            )
+        } else sheetPath = null
+    }
+}
+
+@Composable
+fun EmptyHint(text: String) {
+    Row(Modifier.fillMaxWidth().padding(24.dp)) {
+        Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}

@@ -97,6 +97,55 @@ object AppIcons {
         }
     }
 
+
+    /** 搜索（Material search path，填充） */
+    val Search: ImageVector by lazy {
+        build("Search") {
+            path(fill = androidx.compose.ui.graphics.SolidColor(androidx.compose.ui.graphics.Color.Black)) {
+                moveTo(15.5f, 14f)
+                horizontalLineTo(14.71f)
+                lineTo(14.43f, 13.73f)
+                curveTo(15.41f, 12.59f, 16f, 11.11f, 16f, 9.5f)
+                curveTo(16f, 5.91f, 13.09f, 3f, 9.5f, 3f)
+                reflectiveCurveTo(3f, 5.91f, 3f, 9.5f)
+                reflectiveCurveTo(5.91f, 16f, 9.5f, 16f)
+                curveTo(11.11f, 16f, 12.59f, 15.41f, 13.73f, 14.43f)
+                lineTo(14f, 14.71f)
+                verticalLineTo(15.5f)
+                lineTo(19f, 20.49f)
+                lineTo(20.49f, 19f)
+                close()
+                moveTo(9.5f, 14f)
+                curveTo(7.01f, 14f, 5f, 11.99f, 5f, 9.5f)
+                reflectiveCurveTo(7.01f, 5f, 9.5f, 5f)
+                reflectiveCurveTo(14f, 7.01f, 14f, 9.5f)
+                reflectiveCurveTo(11.99f, 14f, 9.5f, 14f)
+                close()
+            }
+        }
+    }
+
+    /** 关闭（Material close path，填充） */
+    val Close: ImageVector by lazy {
+        build("Close") {
+            path(fill = androidx.compose.ui.graphics.SolidColor(androidx.compose.ui.graphics.Color.Black)) {
+                moveTo(19f, 6.41f)
+                lineTo(17.59f, 5f)
+                lineTo(12f, 10.59f)
+                lineTo(6.41f, 5f)
+                lineTo(5f, 6.41f)
+                lineTo(10.59f, 12f)
+                lineTo(5f, 17.59f)
+                lineTo(6.41f, 19f)
+                lineTo(12f, 13.41f)
+                lineTo(17.59f, 19f)
+                lineTo(19f, 17.59f)
+                lineTo(13.41f, 12f)
+                close()
+            }
+        }
+    }
+
     /** 用三次贝塞尔在 PathBuilder 里画圆（k ≈ 0.5523） */
     private fun androidx.compose.ui.graphics.vector.PathBuilder.circle(cx: Float, cy: Float, r: Float) {
         val k = 0.5523f * r

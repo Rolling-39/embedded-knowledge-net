@@ -5,9 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -16,17 +14,24 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.rolling.learningguider.LearningGuiderApp
 import com.rolling.learningguider.ui.icons.AppIcons
+import com.rolling.learningguider.ui.library.LibraryScreen
+import com.rolling.learningguider.ui.me.MeScreen
+import com.rolling.learningguider.ui.net.NetScreen
+import com.rolling.learningguider.ui.progress.ProgressScreen
+import com.rolling.learningguider.ui.theme.LearningGuiderTheme
 
 /** 四个顶层目的地（顺序即 Tab 顺序） */
 enum class TopDestination(val label: String, val icon: ImageVector) {
@@ -38,6 +43,22 @@ enum class TopDestination(val label: String, val icon: ImageVector) {
 
 @Composable
 fun AppRoot() {
+    val app = LocalContext.current.applicationContext as LearningGuiderApp
+    val vm: AppViewModel = viewModel { AppViewModel(app.container.repository) }
+    val ui by vm.ui.collectAsState()
+
+    val darkTheme = when (ui.themeMode) {
+        "light" -> false
+        "dark" -> true
+        else -> isSystemInDarkTheme()
+    }
+    LearningGuiderTheme(darkTheme = darkTheme) {
+        AppRootContent(vm)
+    }
+}
+
+@Composable
+private fun AppRootContent(vm: AppViewModel) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val current = TopDestination.entries.firstOrNull {
@@ -67,9 +88,7 @@ fun AppRoot() {
         NavHost(
             navController = navController,
             startDestination = TopDestination.NET.name,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+            modifier = Modifier.padding(padding),
             enterTransition = {
                 fadeIn(tween(220)) + slideInHorizontally(tween(220)) { it / 8 }
             },
@@ -79,27 +98,10 @@ fun AppRoot() {
                 fadeOut(tween(160)) + slideOutHorizontally(tween(160)) { it / 8 }
             },
         ) {
-            composable(TopDestination.NET.name) { PlaceholderScreen(TopDestination.NET.label, "全屏知识网画布（M3）") }
-            composable(TopDestination.LIBRARY.name) { PlaceholderScreen(TopDestination.LIBRARY.label, "技能/岗位/路径/资源（M2）") }
-            composable(TopDestination.PROGRESS.name) { PlaceholderScreen(TopDestination.PROGRESS.label, "总进度与岗位掌握度（M4）") }
-            composable(TopDestination.ME.name) { PlaceholderScreen(TopDestination.ME.label, "主题/导入导出/设置（M6）") }
+            composable(TopDestination.NET.name) { NetScreen(vm) }
+            composable(TopDestination.LIBRARY.name) { LibraryScreen(vm) }
+            composable(TopDestination.PROGRESS.name) { ProgressScreen(vm) }
+            composable(TopDestination.ME.name) { MeScreen(vm) }
         }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(title: String, hint: String) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(title, style = MaterialTheme.typography.headlineMedium)
-        Text(
-            hint,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp),
-        )
     }
 }
