@@ -127,6 +127,7 @@ fun NetScreen(vm: AppViewModel) {
     var focusSkill by rememberSaveable { mutableStateOf<String?>(null) }
     var sheetSkill by rememberSaveable { mutableStateOf<String?>(null) }
     var sheetJob by rememberSaveable { mutableStateOf<String?>(null) }
+    var skillFormId by rememberSaveable { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
     // 系统级「移除动画」+ 应用内开关 → 双重尊重
@@ -227,6 +228,7 @@ fun NetScreen(vm: AppViewModel) {
                 onStartDate = { vm.setSkillStartDate(id, it) },
                 onGoalDate = { vm.setSkillGoalDate(id, it) },
                 onFocusNet = { focusSkill = id; sheetSkill = null },
+                onEdit = { skillFormId = id; sheetSkill = null },
             )
         } else sheetSkill = null
     }
@@ -242,6 +244,15 @@ fun NetScreen(vm: AppViewModel) {
                 onNoteChange = { vm.setJobNote(id, it) },
             )
         } else sheetJob = null
+    }
+    if (skillFormId != null) {
+        val initial = skillFormId?.takeIf { it.isNotBlank() }?.let { ui.effective.skills[it] }
+        com.rolling.learningguider.ui.library.SkillFormSheet(
+            initial = initial,
+            ui = ui,
+            onSave = { vm.saveSkill(skillFormId?.takeIf { it.isNotBlank() }, it); skillFormId = null },
+            onDismiss = { skillFormId = null },
+        )
     }
 }
 

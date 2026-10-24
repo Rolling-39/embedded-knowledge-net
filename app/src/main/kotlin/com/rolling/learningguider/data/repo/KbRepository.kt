@@ -202,6 +202,20 @@ class KbRepository(
         _prefs.value = _prefs.value.copy(theme = mode)
     }
 
+    /** 新增/编辑记录：payload 应为完整记录（user=true），upsert 覆盖旧覆盖或墓碑 */
+    suspend fun upsertRecord(kind: String, id: String, payload: JsonObject) = withContext(Dispatchers.IO) {
+        db.userDao().upsertRecords(
+            listOf(UserRecordEntity(id, kind, payload.flag("user"), false, payload.toString())),
+        )
+    }
+
+    /** 新增自定义资源 */
+    suspend fun addResource(item: ResourceItem) = withContext(Dispatchers.IO) {
+        db.userDao().upsertResources(
+            listOf(UserResourceEntity(item.id.ifBlank { "ur${System.currentTimeMillis()}" }, item.cat, item.n, item.d)),
+        )
+    }
+
     suspend fun setReduceMotion(on: Boolean) = withContext(Dispatchers.IO) {
         db.stateDao().putKv(com.rolling.learningguider.data.db.KvEntity(KV_REDUCE, if (on) "1" else "0"))
         _prefs.value = _prefs.value.copy(reduceMotion = on)

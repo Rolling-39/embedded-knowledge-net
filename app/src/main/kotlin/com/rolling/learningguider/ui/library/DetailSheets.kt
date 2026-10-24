@@ -163,6 +163,7 @@ fun SkillDetailSheet(
     onStartDate: (String) -> Unit,
     onGoalDate: (String) -> Unit,
     onFocusNet: (() -> Unit)? = null,
+    onEdit: (() -> Unit)? = null,
 ) {
     val skill = ui.effective.skills[skillId] ?: return
     val done = ui.skillDone[skillId] ?: SkillDone()
@@ -249,10 +250,15 @@ fun SkillDetailSheet(
             }
             Spacer(Modifier.height(16.dp))
             HorizontalDivider()
-            OutlinedButton(
-                onClick = { confirmDelete = true },
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-            ) { Text("隐藏该技能（可恢复）", color = MaterialTheme.colorScheme.error) }
+            Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (onEdit != null) {
+                    OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f)) { Text("编辑") }
+                }
+                OutlinedButton(
+                    onClick = { confirmDelete = true },
+                    modifier = Modifier.weight(1f),
+                ) { Text("隐藏（可恢复）", color = MaterialTheme.colorScheme.error) }
+            }
         }
     }
     if (confirmDelete) {
@@ -293,6 +299,7 @@ fun JobDetailSheet(
     onDismiss: () -> Unit,
     onSetStatus: (String) -> Unit,
     onNoteChange: (String) -> Unit,
+    onEdit: (() -> Unit)? = null,
 ) {
     val job = ui.effective.jobs[jobId] ?: return
     val state = ui.jobState[jobId]
@@ -363,8 +370,13 @@ fun JobDetailSheet(
 
             Spacer(Modifier.height(16.dp))
             HorizontalDivider()
-            OutlinedButton(onClick = { confirmDelete = true }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp)) {
-                Text("隐藏该岗位（可恢复）", color = MaterialTheme.colorScheme.error)
+            Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (onEdit != null) {
+                    OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f)) { Text("编辑") }
+                }
+                OutlinedButton(onClick = { confirmDelete = true }, modifier = Modifier.weight(1f)) {
+                    Text("隐藏（可恢复）", color = MaterialTheme.colorScheme.error)
+                }
             }
         }
     }
@@ -382,8 +394,16 @@ fun JobDetailSheet(
 /* ============== 路线详情 ============== */
 
 @Composable
-fun PathDetailSheet(path: LearnPath, ui: UiState, onOpenSkill: (String) -> Unit, onDismiss: () -> Unit) {
+fun PathDetailSheet(
+    path: LearnPath,
+    ui: UiState,
+    onOpenSkill: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onEdit: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
+) {
     val job = ui.effective.jobs[path.job]
+    var confirmDelete by remember { mutableStateOf(false) }
     val doneCnt = path.skills.count { (ui.skillDone[it]?.st ?: "none") == "done" }
     val learningCnt = path.skills.count { (ui.skillDone[it]?.st ?: "none") == "learning" }
     ModalBottomSheet(onDismissRequest = onDismiss) {
@@ -434,6 +454,27 @@ fun PathDetailSheet(path: LearnPath, ui: UiState, onOpenSkill: (String) -> Unit,
                 SectionTitle("推荐练手项目")
                 FlowChips(job!!.projects.map { it to null }, Color(0xFF10B981))
             }
+            Spacer(Modifier.height(16.dp))
+            HorizontalDivider()
+            Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (onEdit != null) {
+                    OutlinedButton(onClick = onEdit, modifier = Modifier.weight(1f)) { Text("编辑路线") }
+                }
+                if (onDelete != null) {
+                    OutlinedButton(onClick = { confirmDelete = true }, modifier = Modifier.weight(1f)) {
+                        Text("隐藏路线（可恢复）", color = MaterialTheme.colorScheme.error)
+                    }
+                }
+            }
         }
+    }
+    if (confirmDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            title = { Text("隐藏路线") },
+            text = { Text("隐藏「${path.name}」？可在路线列表底部恢复。") },
+            confirmButton = { TextButton(onClick = { confirmDelete = false; onDelete?.invoke() }) { Text("隐藏", color = MaterialTheme.colorScheme.error) } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("取消") } },
+        )
     }
 }

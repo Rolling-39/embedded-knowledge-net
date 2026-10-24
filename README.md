@@ -24,3 +24,7 @@ JAVA_HOME="E:/Android Studio/jbr" ./gradlew testDebugUnitTest
 # 网页版互导回归（需先跑测试生成 app-export.json）
 node tools/gen-web-fixture.js && node tools/check-web-import.js
 ```
+
+## v0.3
+
+新增/编辑/隐藏全链路补齐：四类内容的「＋新增」、详情内「编辑」、路线隐藏恢复；路径编辑支持技能排序。

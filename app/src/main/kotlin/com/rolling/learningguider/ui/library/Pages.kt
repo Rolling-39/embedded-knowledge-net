@@ -52,11 +52,12 @@ import com.rolling.learningguider.ui.common.levelColor
 /* ============== 技能字典：按分类分组 + 吸顶 + 搜索 ============== */
 
 @Composable
-fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit) {
+fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit, onAdd: () -> Unit = {}) {
     val e = ui.effective
     val q = query.trim()
     val cats = Skill.CATEGORIES + e.skills.values.map { it.cat }.filter { it !in Skill.CATEGORIES }.distinct()
     LazyColumn(Modifier.fillMaxSize()) {
+        item(key = "add-skill") { AddButtonRow("＋ 新增技能", onAdd) }
         cats.forEach { cat ->
             val list = e.skills.entries.filter { it.value.cat == cat }
             val filtered = if (q.isEmpty()) list else list.filter { (_, s) ->
@@ -124,11 +125,12 @@ private fun SkillRow(id: String, s: Skill, ui: UiState, onClick: (String) -> Uni
 /* ============== 岗位字典 ============== */
 
 @Composable
-fun JobListPage(ui: UiState, query: String, onJobClick: (String) -> Unit, onRestore: (String) -> Unit) {
+fun JobListPage(ui: UiState, query: String, onJobClick: (String) -> Unit, onRestore: (String) -> Unit, onAdd: () -> Unit = {}) {
     val q = query.trim()
     val jobs = ui.effective.jobs.values
         .filter { q.isEmpty() || it.name.contains(q, true) || it.work.contains(q, true) || it.review.contains(q, true) }
     LazyColumn(Modifier.fillMaxSize()) {
+        item(key = "add-job") { AddButtonRow("＋ 新增岗位", onAdd) }
         items(jobs.toList(), key = { it.id }) { j -> JobCard(j, onJobClick) }
         if (jobs.isEmpty()) item { EmptyHint("没有匹配「$q」的岗位") }
         item { HiddenRestoreRow(ui.hiddenJobs, "岗位", onRestore) }
@@ -172,10 +174,11 @@ private fun JobCard(j: Job, onClick: (String) -> Unit) {
 /* ============== 学习路径 ============== */
 
 @Composable
-fun PathListPage(ui: UiState, query: String, onPathClick: (String) -> Unit, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit) {
+fun PathListPage(ui: UiState, query: String, onPathClick: (String) -> Unit, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit, onAdd: () -> Unit = {}) {
     val q = query.trim()
     val paths = ui.effective.paths.filter { q.isEmpty() || it.name.contains(q, true) }
     LazyColumn(Modifier.fillMaxSize()) {
+        item(key = "add-path") { AddButtonRow("＋ 新增路线", onAdd) }
         items(paths, key = { it.id }) { p -> PathCard(p, ui, onPathClick, onSkillClick) }
         if (paths.isEmpty()) item { EmptyHint("没有匹配「$q」的路线") }
         item { HiddenRestoreRow(ui.hiddenPaths, "路线", onRestore) }
@@ -243,9 +246,10 @@ private fun ThreeColorBarSafe(done: Int, learning: Int, total: Int, modifier: Mo
 /* ============== 学习资源 ============== */
 
 @Composable
-fun ResourceListPage(ui: UiState, query: String, onDeleteResource: (String) -> Unit) {
+fun ResourceListPage(ui: UiState, query: String, onDeleteResource: (String) -> Unit, onAdd: () -> Unit = {}) {
     val q = query.trim()
     LazyColumn(Modifier.fillMaxSize()) {
+        item(key = "add-res") { AddButtonRow("＋ 新增资源", onAdd) }
         ui.effective.resources.forEach { (cat, category) ->
             val filtered = category.items.filter { q.isEmpty() || it.n.contains(q, true) || it.d.contains(q, true) }
             if (filtered.isEmpty()) return@forEach
@@ -298,6 +302,24 @@ private fun ResourceRow(r: ResourceItem, onDeleteResource: (String) -> Unit) {
                 )
             }
         }
+    }
+}
+
+/* ============== 新增按钮行 ============== */
+
+@Composable
+private fun AddButtonRow(label: String, onAdd: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        Text(
+            label,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.pressable(onAdd).padding(8.dp),
+        )
     }
 }
 

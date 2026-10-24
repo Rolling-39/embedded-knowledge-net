@@ -41,6 +41,11 @@ fun LibraryScreen(vm: AppViewModel) {
     var sheetSkill by rememberSaveable { mutableStateOf<String?>(null) }
     var sheetJob by rememberSaveable { mutableStateOf<String?>(null) }
     var sheetPath by rememberSaveable { mutableStateOf<String?>(null) }
+    // 表单状态：null=关闭 / ""=新增 / 其他=编辑对应 id
+    var formSkill by rememberSaveable { mutableStateOf<String?>(null) }
+    var formJob by rememberSaveable { mutableStateOf<String?>(null) }
+    var formPath by rememberSaveable { mutableStateOf<String?>(null) }
+    var formRes by rememberSaveable { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = pagerState.currentPage) {
@@ -70,10 +75,10 @@ fun LibraryScreen(vm: AppViewModel) {
         )
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             when (page) {
-                0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord)
-                1 -> JobListPage(ui, query, onJobClick = { sheetJob = it }, onRestore = vm::restoreRecord)
-                2 -> PathListPage(ui, query, onPathClick = { sheetPath = it }, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord)
-                else -> ResourceListPage(ui, query, onDeleteResource = { vm.deleteResource(it) })
+                0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formSkill = "" })
+                1 -> JobListPage(ui, query, onJobClick = { sheetJob = it }, onRestore = vm::restoreRecord, onAdd = { formJob = "" })
+                2 -> PathListPage(ui, query, onPathClick = { sheetPath = it }, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formPath = "" })
+                else -> ResourceListPage(ui, query, onDeleteResource = { vm.deleteResource(it) }, onAdd = { formRes = true })
             }
         }
     }
@@ -90,6 +95,7 @@ fun LibraryScreen(vm: AppViewModel) {
                 onNoteChange = { vm.setSkillNote(id, it) },
                 onStartDate = { vm.setSkillStartDate(id, it) },
                 onGoalDate = { vm.setSkillGoalDate(id, it) },
+                onEdit = { formSkill = id },
             )
         } else sheetSkill = null
     }
@@ -103,6 +109,7 @@ fun LibraryScreen(vm: AppViewModel) {
                 onDismiss = { sheetJob = null },
                 onSetStatus = { st -> vm.setJobStatus(id, st) },
                 onNoteChange = { vm.setJobNote(id, it) },
+                onEdit = { formJob = id },
             )
         } else sheetJob = null
     }
@@ -114,8 +121,45 @@ fun LibraryScreen(vm: AppViewModel) {
                 ui = ui,
                 onOpenSkill = { sheetSkill = it; sheetPath = null },
                 onDismiss = { sheetPath = null },
+                onEdit = { formPath = id },
+                onDelete = { vm.deleteRecord("path", id); sheetPath = null },
             )
         } else sheetPath = null
+    }
+
+    // ===== 表单挂载 =====
+    if (formSkill != null) {
+        val initial = formSkill?.takeIf { it.isNotBlank() }?.let { ui.effective.skills[it] }
+        SkillFormSheet(
+            initial = initial,
+            ui = ui,
+            onSave = { vm.saveSkill(formSkill?.takeIf { it.isNotBlank() }, it); formSkill = null },
+            onDismiss = { formSkill = null },
+        )
+    }
+    if (formJob != null) {
+        val initial = formJob?.takeIf { it.isNotBlank() }?.let { ui.effective.jobs[it] }
+        JobFormSheet(
+            initial = initial,
+            onSave = { vm.saveJob(formJob?.takeIf { it.isNotBlank() }, it); formJob = null },
+            onDismiss = { formJob = null },
+        )
+    }
+    if (formPath != null) {
+        val initial = formPath?.takeIf { it.isNotBlank() }?.let { pid -> ui.effective.paths.firstOrNull { it.id == pid } }
+        PathFormSheet(
+            initial = initial,
+            ui = ui,
+            onSave = { vm.savePath(formPath?.takeIf { it.isNotBlank() }, it); formPath = null },
+            onDismiss = { formPath = null },
+        )
+    }
+    if (formRes) {
+        ResourceFormSheet(
+            initial = null,
+            onSave = { vm.addResource(it); formRes = false },
+            onDismiss = { formRes = false },
+        )
     }
 }
 

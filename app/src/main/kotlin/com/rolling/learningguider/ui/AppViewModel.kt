@@ -78,6 +78,31 @@ class AppViewModel(private val repo: KbRepository) : ViewModel() {
     fun setTheme(mode: String) = launch { repo.setTheme(mode) }
     fun setReduceMotion(on: Boolean) = launch { repo.setReduceMotion(on) }
 
+    /* ============== 新增 / 编辑 ============== */
+
+    fun saveSkill(existingId: String?, skill: com.rolling.learningguider.data.model.Skill) = launch {
+        val payload = com.rolling.learningguider.data.merge.Merger.json
+            .encodeToJsonElement(com.rolling.learningguider.data.model.Skill.serializer(), skill.copy(user = true))
+            .jsonObject
+        repo.upsertRecord(KbRepository.KIND_SKILL, existingId ?: "us${System.currentTimeMillis()}", payload)
+    }
+
+    fun saveJob(existingId: String?, job: com.rolling.learningguider.data.model.Job) = launch {
+        val payload = com.rolling.learningguider.data.merge.Merger.json
+            .encodeToJsonElement(com.rolling.learningguider.data.model.Job.serializer(), job.copy(user = true))
+            .jsonObject
+        repo.upsertRecord(KbRepository.KIND_JOB, existingId ?: "uj${System.currentTimeMillis()}", payload)
+    }
+
+    fun savePath(existingId: String?, path: com.rolling.learningguider.data.model.LearnPath) = launch {
+        val payload = com.rolling.learningguider.data.merge.Merger.json
+            .encodeToJsonElement(com.rolling.learningguider.data.model.LearnPath.serializer(), path.copy(user = true))
+            .jsonObject
+        repo.upsertRecord(KbRepository.KIND_PATH, existingId ?: "up${System.currentTimeMillis()}", payload)
+    }
+
+    fun addResource(item: com.rolling.learningguider.data.model.ResourceItem) = launch { repo.addResource(item) }
+
     fun clearAll() = launch {
         repo.clearAll()
     }
