@@ -1,0 +1,6 @@
+<resources>
+    <!-- 图标背景：取自用户图标设计的深灰底 -->
+    <color name="ic_launcher_background">#5B5F66</color>
+    <color name="splash_background">#F4F6FB</color>
+    <color name="splash_background_dark">#0F172A</color>
+</resources>

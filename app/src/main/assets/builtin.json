@@ -1,0 +1,2534 @@
+{
+ "version": "v9.21",
+ "generatedAt": "2026-10-24",
+ "skills": {
+  "c": {
+   "name": "C语言",
+   "cat": "语言基础",
+   "diff": 2,
+   "content": "变量/指针/内存/结构体/位运算/函数；嵌入式核心语言。",
+   "role": "一切方向地基；写驱动、写应用、写算法都要用。",
+   "hard": "指针与内存模型、数组退化、内存泄漏。",
+   "key": "指针、内存布局、位运算、函数指针",
+   "res": [
+    "《C Primer Plus》",
+    "B站翁恺C语言",
+    "《C和指针》",
+    "LeetCode 基础题"
+   ],
+   "pre": []
+  },
+  "cpp": {
+   "name": "C++",
+   "cat": "语言基础",
+   "diff": 3,
+   "content": "类/STL/RAII/模板/多线程库。",
+   "role": "Linux应用/边缘AI方向常用。",
+   "hard": "RAII与智能指针、模板。",
+   "key": "类与对象、STL、智能指针",
+   "res": [
+    "《C++ Primer》",
+    "《Effective C++》"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "py": {
+   "name": "Python",
+   "cat": "语言基础",
+   "diff": 2,
+   "content": "语法/列表字典/文件处理/numpy。",
+   "role": "边缘AI模型训练与工具脚本。",
+   "hard": "工程化习惯。",
+   "key": "列表推导、文件处理、numpy",
+   "res": [
+    "廖雪峰Python教程",
+    "《Python编程从入门到实践》"
+   ],
+   "pre": []
+  },
+  "ds": {
+   "name": "数据结构与算法",
+   "cat": "语言基础",
+   "diff": 3,
+   "content": "链表/队列/栈/树/排序/复杂度。",
+   "role": "面试必考；链表、队列、环形缓冲常用。",
+   "hard": "递归与指针操作。",
+   "key": "链表、队列、二叉树、排序",
+   "res": [
+    "《大话数据结构》",
+    "LeetCode"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "dc": {
+   "name": "数字电路基础",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "门电路/触发器/计数器/时序电路/总线。",
+   "role": "看懂电路图、MCU/FPGA基础。",
+   "hard": "时序逻辑与状态机概念。",
+   "key": "逻辑门、触发器、时钟",
+   "res": [
+    "《数字电子技术基础》(阎石)",
+    "B站数字电路课程"
+   ],
+   "pre": []
+  },
+  "stm32": {
+   "name": "STM32开发",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "HAL库/CubeMX/时钟树/启动流程/外设配置。",
+   "role": "MCU方向核心，大多数岗位的硬件载体。",
+   "hard": "时钟树与启动流程。",
+   "key": "CubeMX、HAL库、时钟树",
+   "res": [
+    "正点原子教程",
+    "野火STM32教程",
+    "ST官方手册"
+   ],
+   "pre": [
+    "c",
+    "dc"
+   ]
+  },
+  "gpio": {
+   "name": "GPIO与点灯",
+   "cat": "硬件",
+   "diff": 1,
+   "content": "推挽/开漏/上下拉/输入输出模式。",
+   "role": "外设驱动地基。",
+   "hard": "开漏与上拉理解。",
+   "key": "模式配置、电平控制",
+   "res": [
+    "开发板例程"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "int": {
+   "name": "中断系统",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "中断向量/NVIC/优先级/ISR。",
+   "role": "实时性核心。",
+   "hard": "优先级配置、ISR限制。",
+   "key": "优先级、ISR、临界区",
+   "res": [
+    "参考手册",
+    "《ARM Cortex-M3/M4权威指南》"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "timer": {
+   "name": "定时器/PWM",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "基本定时/输入捕获/输出比较/PWM。",
+   "role": "电机控制、消抖、延时。",
+   "hard": "捕获比较模式。",
+   "key": "PWM、捕获、定时中断",
+   "res": [
+    "例程",
+    "ST应用笔记"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "uart": {
+   "name": "UART串口",
+   "cat": "硬件",
+   "diff": 2,
+   "content": "波特率/数据格式/收发/printf重定向。",
+   "role": "调试必备。",
+   "hard": "DMA收发、粘包处理。",
+   "key": "波特率、收发缓冲、printf",
+   "res": [
+    "例程",
+    "串口调试教程"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "i2c": {
+   "name": "I2C/SPI总线",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "时序/地址/寄存器读写/多设备挂载。",
+   "role": "连接传感器/存储/屏幕。",
+   "hard": "时序理解与调试。",
+   "key": "读写时序、从机地址、上拉",
+   "res": [
+    "逻辑分析仪抓包教程"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "dma": {
+   "name": "DMA传输",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "外设到内存/内存到内存/双缓冲。",
+   "role": "大块数据搬运不占CPU。",
+   "hard": "双缓冲乒乓与中断配合。",
+   "key": "通道配置、完成中断、双缓冲",
+   "res": [
+    "ST DMA应用笔记"
+   ],
+   "pre": [
+    "stm32",
+    "int"
+   ]
+  },
+  "lp": {
+   "name": "低功耗设计",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "Sleep/Stop/Standby/功耗测量/唤醒。",
+   "role": "穿戴/IoT电池设备续航关键。",
+   "hard": "外设状态管理。",
+   "key": "功耗模式、唤醒源",
+   "res": [
+    "ST低功耗手册",
+    "nRF低功耗实践"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "esp": {
+   "name": "ESP32/WiFi模块",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "ESP-IDF/AT指令/TCP/MQTT/OTA。",
+   "role": "IoT方向快速入门硬件平台。",
+   "hard": "网络任务与内存模型。",
+   "key": "联网流程、AT指令、OTA",
+   "res": [
+    "ESP-IDF官方文档",
+    "乐鑫例程"
+   ],
+   "pre": [
+    "c",
+    "uart"
+   ]
+  },
+  "freertos": {
+   "name": "FreeRTOS",
+   "cat": "系统",
+   "diff": 3,
+   "content": "任务创建/调度/延时/API/移植。",
+   "role": "工业与车载MCU标配。",
+   "hard": "任务栈与调度机制。",
+   "key": "任务创建、优先级、延时",
+   "res": [
+    "FreeRTOS官方文档",
+    "《FreeRTOS内核实现与应用开发实战》"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "task": {
+   "name": "任务调度",
+   "cat": "系统",
+   "diff": 3,
+   "content": "抢占/时间片/状态机/优先级。",
+   "role": "RTOS灵魂。",
+   "hard": "状态迁移、优先级反转。",
+   "key": "状态机、抢占、优先级",
+   "res": [
+    "FreeRTOS源码分析"
+   ],
+   "pre": [
+    "freertos"
+   ]
+  },
+  "sync": {
+   "name": "信号量与队列",
+   "cat": "系统",
+   "diff": 3,
+   "content": "信号量/互斥量/消息队列/事件组。",
+   "role": "任务通信与资源共享。",
+   "hard": "死锁、优先级反转。",
+   "key": "队列、互斥、同步模式",
+   "res": [
+    "FreeRTOS文档"
+   ],
+   "pre": [
+    "task"
+   ]
+  },
+  "mem": {
+   "name": "内存管理",
+   "cat": "系统",
+   "diff": 2,
+   "content": "堆栈分配/内存池/碎片/泄漏排查。",
+   "role": "系统稳定性关键。",
+   "hard": "碎片与泄漏排查。",
+   "key": "内存池、栈大小、泄漏",
+   "res": [
+    "RTOS内存管理文档"
+   ],
+   "pre": [
+    "freertos"
+   ]
+  },
+  "rtt": {
+   "name": "RT-Thread",
+   "cat": "系统",
+   "diff": 3,
+   "content": "国产RTOS/设备模型/组件/中文文档。",
+   "role": "国产替代加分项。",
+   "hard": "设备模型与组件。",
+   "key": "内核、设备框架、软件包",
+   "res": [
+    "RT-Thread官方文档"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "linux": {
+   "name": "Linux基础",
+   "cat": "系统",
+   "diff": 2,
+   "content": "命令/文件系统/权限/进程/网络。",
+   "role": "嵌入式Linux一切起点。",
+   "hard": "权限与进程概念。",
+   "key": "常用命令、文件权限",
+   "res": [
+    "《鸟哥的Linux私房菜》"
+   ],
+   "pre": []
+  },
+  "shell": {
+   "name": "Shell/Makefile",
+   "cat": "系统",
+   "diff": 2,
+   "content": "脚本/变量/Makefile依赖规则。",
+   "role": "自动化构建与部署。",
+   "hard": "Makefile依赖规则。",
+   "key": "Shell脚本、Makefile规则",
+   "res": [
+    "Shell教程",
+    "GNU Make手册"
+   ],
+   "pre": [
+    "linux"
+   ]
+  },
+  "cross": {
+   "name": "交叉编译",
+   "cat": "系统",
+   "diff": 3,
+   "content": "工具链/环境变量/动静态库。",
+   "role": "嵌入式Linux标配。",
+   "hard": "依赖库路径与链接。",
+   "key": "工具链、库链接",
+   "res": [
+    "交叉编译教程",
+    "正点原子教程"
+   ],
+   "pre": [
+    "linux"
+   ]
+  },
+  "sysprog": {
+   "name": "Linux系统编程",
+   "cat": "系统",
+   "diff": 4,
+   "content": "文件IO/进程/线程/信号/IPC。",
+   "role": "Linux应用岗核心。",
+   "hard": "IPC机制与并发正确性。",
+   "key": "文件IO、进程线程、IPC",
+   "res": [
+    "《Unix环境高级编程》"
+   ],
+   "pre": [
+    "linux",
+    "c"
+   ]
+  },
+  "thread": {
+   "name": "多线程与并发",
+   "cat": "系统",
+   "diff": 4,
+   "content": "pthread/互斥锁/条件变量/线程池。",
+   "role": "高并发应用。",
+   "hard": "死锁、竞态、锁粒度。",
+   "key": "线程同步、条件变量",
+   "res": [
+    "《Unix环境高级编程》"
+   ],
+   "pre": [
+    "sysprog"
+   ]
+  },
+  "epoll": {
+   "name": "epoll高并发",
+   "cat": "系统",
+   "diff": 4,
+   "content": "IO多路复用/epoll模型/ET/LT。",
+   "role": "网络服务高并发关键。",
+   "hard": "事件状态机与非阻塞IO。",
+   "key": "epoll模型、ET/LT、事件循环",
+   "res": [
+    "《Linux高性能服务器编程》"
+   ],
+   "pre": [
+    "sock",
+    "thread"
+   ]
+  },
+  "kmod": {
+   "name": "内核模块",
+   "cat": "系统",
+   "diff": 4,
+   "content": "模块加载/insmod/modprobe/printk。",
+   "role": "驱动方向第一步。",
+   "hard": "内核态与用户态差异。",
+   "key": "模块框架、加载卸载",
+   "res": [
+    "《Linux设备驱动开发》"
+   ],
+   "pre": [
+    "linux",
+    "c"
+   ]
+  },
+  "chardev": {
+   "name": "字符设备驱动",
+   "cat": "系统",
+   "diff": 4,
+   "content": "file_operations/注册/读写/ioctl/并发。",
+   "role": "驱动开发核心框架。",
+   "hard": "并发与竞态处理。",
+   "key": "file_operations、设备注册",
+   "res": [
+    "《Linux设备驱动开发》"
+   ],
+   "pre": [
+    "kmod"
+   ]
+  },
+  "dts": {
+   "name": "设备树",
+   "cat": "系统",
+   "diff": 4,
+   "content": "DTS语法/platform匹配/节点属性。",
+   "role": "现代驱动标配。",
+   "hard": "匹配机制与overlay。",
+   "key": "节点、属性、匹配",
+   "res": [
+    "设备树教程",
+    "内核文档"
+   ],
+   "pre": [
+    "chardev"
+   ]
+  },
+  "yocto": {
+   "name": "Yocto/Buildroot",
+   "cat": "系统",
+   "diff": 4,
+   "content": "定制发行版/recipe/bitbake。",
+   "role": "系统集成必备。",
+   "hard": "构建系统复杂度。",
+   "key": "recipe、镜像定制",
+   "res": [
+    "Yocto文档",
+    "《Mastering Embedded Linux Programming》"
+   ],
+   "pre": [
+    "linux",
+    "cross"
+   ]
+  },
+  "tcp": {
+   "name": "TCP/IP",
+   "cat": "协议",
+   "diff": 3,
+   "content": "分层/三次握手/滑动窗口/拥塞控制。",
+   "role": "一切网络通信基础。",
+   "hard": "拥塞控制与状态机。",
+   "key": "分层、握手、可靠性",
+   "res": [
+    "《TCP/IP详解 卷1》"
+   ],
+   "pre": []
+  },
+  "sock": {
+   "name": "Socket编程",
+   "cat": "协议",
+   "diff": 3,
+   "content": "TCP/UDP socket/阻塞非阻塞/粘包。",
+   "role": "设备联网编程基础。",
+   "hard": "粘包/非阻塞IO。",
+   "key": "socket API、收发、超时",
+   "res": [
+    "《Unix网络编程》"
+   ],
+   "pre": [
+    "tcp",
+    "c"
+   ]
+  },
+  "mqtt": {
+   "name": "MQTT",
+   "cat": "协议",
+   "diff": 3,
+   "content": "发布订阅/QoS 0-2/遗嘱/保活。",
+   "role": "IoT事实标准协议。",
+   "hard": "QoS语义与重连。",
+   "key": "主题、QoS、保活、重连",
+   "res": [
+    "MQTT规范",
+    "MQTTX工具"
+   ],
+   "pre": [
+    "sock"
+   ]
+  },
+  "ble": {
+   "name": "BLE蓝牙",
+   "cat": "协议",
+   "diff": 4,
+   "content": "GATT/广播/连接/配对/功耗。",
+   "role": "穿戴/外设标配。",
+   "hard": "连接参数与功耗平衡。",
+   "key": "GATT、广播、连接间隔",
+   "res": [
+    "蓝牙规范",
+    "nRF SDK"
+   ],
+   "pre": []
+  },
+  "wifi": {
+   "name": "WiFi联网",
+   "cat": "协议",
+   "diff": 3,
+   "content": "802.11基础/AP-STA/漫游/弱网。",
+   "role": "智能家居主力联网。",
+   "hard": "弱网重连策略。",
+   "key": "连接流程、重连策略",
+   "res": [
+    "ESP-IDF文档"
+   ],
+   "pre": [
+    "sock"
+   ]
+  },
+  "lora": {
+   "name": "LoRa/NB-IoT",
+   "cat": "协议",
+   "diff": 4,
+   "content": "广域低功耗/LoRaWAN/NB-IoT。",
+   "role": "工业远传/表计/农业。",
+   "hard": "组网与速率权衡。",
+   "key": "扩频、网关、入网",
+   "res": [
+    "LoRaWAN规范"
+   ],
+   "pre": []
+  },
+  "lwip": {
+   "name": "LwIP协议栈",
+   "cat": "协议",
+   "diff": 4,
+   "content": "移植/内存管理/tcpip_thread/RAW API。",
+   "role": "无OS或RTOS设备联网。",
+   "hard": "内存池与回调。",
+   "key": "移植、API选择、内存",
+   "res": [
+    "LwIP源码分析"
+   ],
+   "pre": [
+    "tcp"
+   ]
+  },
+  "can": {
+   "name": "CAN总线",
+   "cat": "协议",
+   "diff": 3,
+   "content": "报文帧/CAN FD/仲裁/波特率。",
+   "role": "车载与工业标配。",
+   "hard": "仲裁与错误处理。",
+   "key": "报文结构、波特率、过滤器",
+   "res": [
+    "CAN规范"
+   ],
+   "pre": []
+  },
+  "modbus": {
+   "name": "Modbus",
+   "cat": "协议",
+   "diff": 2,
+   "content": "RTU/TCP/寄存器映射/功能码。",
+   "role": "工业互操作标准。",
+   "hard": "寄存器规划与超时。",
+   "key": "报文格式、寄存器",
+   "res": [
+    "Modbus规范"
+   ],
+   "pre": []
+  },
+  "zigbee": {
+   "name": "Zigbee3.0",
+   "cat": "协议",
+   "diff": 3,
+   "content": "组网/路由/入网/绑定/低功耗。",
+   "role": "智能家居组网场景。",
+   "hard": "网络拓扑与入网机制。",
+   "key": "组网、绑定、OTA",
+   "res": [
+    "Zigbee规范"
+   ],
+   "pre": []
+  },
+  "pytorch": {
+   "name": "PyTorch",
+   "cat": "AI/EDA",
+   "diff": 3,
+   "content": "张量/网络定义/训练/导出。",
+   "role": "边缘AI模型来源。",
+   "hard": "反向传播与调参。",
+   "key": "数据加载、训练、导出",
+   "res": [
+    "《动手学深度学习》"
+   ],
+   "pre": [
+    "py"
+   ]
+  },
+  "tflite": {
+   "name": "TFLite Micro",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "模型转换/解释器/内存/算子。",
+   "role": "MCU端侧推理主流框架。",
+   "hard": "算子不支持与内存规划。",
+   "key": "转换、部署、基准测试",
+   "res": [
+    "TFLite文档",
+    "《TinyML》"
+   ],
+   "pre": [
+    "pytorch",
+    "cpp"
+   ]
+  },
+  "quant": {
+   "name": "INT8量化",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "量化原理/感知训练/校准/回退。",
+   "role": "模型瘦身关键。",
+   "hard": "精度与体积平衡。",
+   "key": "量化方式、校准、回退",
+   "res": [
+    "量化教程"
+   ],
+   "pre": [
+    "tflite"
+   ]
+  },
+  "npu": {
+   "name": "NPU加速",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "NPU架构/算子适配/内存/调度。",
+   "role": "边缘AI性能天花板。",
+   "hard": "算子约束与带宽优化。",
+   "key": "算子映射、内存、流水线",
+   "res": [
+    "芯片SDK文档"
+   ],
+   "pre": [
+    "quant"
+   ]
+  },
+  "verilog": {
+   "name": "Verilog",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "语法/可综合/模块化/电路思维。",
+   "role": "FPGA核心语言。",
+   "hard": "并行电路思维切换。",
+   "key": "可综合语法、状态机、模块",
+   "res": [
+    "《Verilog HDL高级数字设计》"
+   ],
+   "pre": [
+    "dc"
+   ]
+  },
+  "fsm": {
+   "name": "状态机设计",
+   "cat": "AI/EDA",
+   "diff": 3,
+   "content": "状态编码/转移表/三段式FSM。",
+   "role": "数字逻辑设计核心方法。",
+   "hard": "状态表推导。",
+   "key": "状态编码、转移表",
+   "res": [
+    "数字设计教程"
+   ],
+   "pre": [
+    "dc"
+   ]
+  },
+  "timing": {
+   "name": "时序分析",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "建立保持时间/约束/报告/收敛。",
+   "role": "FPGA时序收敛关键。",
+   "hard": "时序违例修复。",
+   "key": "约束、时序报告、收敛",
+   "res": [
+    "Vivado时序教程"
+   ],
+   "pre": [
+    "verilog"
+   ]
+  },
+  "cdc": {
+   "name": "跨时钟域处理",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "亚稳态/同步器/格雷码FIFO/握手。",
+   "role": "多时钟系统可靠性。",
+   "hard": "亚稳态原理与同步。",
+   "key": "同步器、格雷码FIFO",
+   "res": [
+    "CDC设计文档"
+   ],
+   "pre": [
+    "timing"
+   ]
+  },
+  "amba": {
+   "name": "AMBA总线",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "AXI/AHB/APB协议/握手/突发。",
+   "role": "SoC/FPGA互联标准。",
+   "hard": "AXI通道时序。",
+   "key": "AXI握手、通道",
+   "res": [
+    "AMBA规范"
+   ],
+   "pre": [
+    "verilog"
+   ]
+  },
+  "analog": {
+   "name": "模拟电路",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "运放/滤波/稳压(LDO)/分压偏置/阻抗匹配。",
+   "role": "硬件工程师核心；传感器调理、电源与信号完整性的基础。",
+   "hard": "运放电路分析与噪声抑制。",
+   "key": "运放、滤波、稳压、阻抗",
+   "res": [
+    "《电子技术基础·模拟部分》",
+    "B站模拟电路课程"
+   ],
+   "pre": [
+    "dc"
+   ]
+  },
+  "pcb": {
+   "name": "PCB设计(Altium)",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "原理图/布局布线/规则/铺铜/DRC/生产工艺。",
+   "role": "硬件工程师主技能，把电路图变成实物板卡。",
+   "hard": "高速信号布局、地平面与叠层设计。",
+   "key": "布局布线、规则DRC、叠层、DFM",
+   "res": [
+    "Altium 官方教程",
+    "立创EDA教程",
+    "《高速数字设计》"
+   ],
+   "pre": [
+    "analog"
+   ]
+  },
+  "psu": {
+   "name": "电源设计",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "LDO/DC-DC(Buck/Boost)/纹波/效率/上电时序。",
+   "role": "板卡命脉；电源噪声影响整个系统稳定性。",
+   "hard": "环路稳定性与纹波抑制。",
+   "key": "LDO、DC-DC拓扑、纹波、时序",
+   "res": [
+    "《开关电源设计》",
+    "TI 电源设计指南"
+   ],
+   "pre": [
+    "analog"
+   ]
+  },
+  "emc": {
+   "name": "EMC/信号完整性",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "辐射/传导/ESD、滤波/屏蔽/接地、阻抗匹配。",
+   "role": "产品过认证的关键，硬件高阶能力。",
+   "hard": "EMC 问题定位与整改。",
+   "key": "EMC标准、滤波、接地、屏蔽",
+   "res": [
+    "EMC 设计手册",
+    "EN55032/ISO11452 标准"
+   ],
+   "pre": [
+    "pcb"
+   ]
+  },
+  "scope": {
+   "name": "硬件调试(示波器)",
+   "cat": "硬件",
+   "diff": 3,
+   "content": "示波器/逻辑分析仪/万用表、时序抓取、信号测量。",
+   "role": "定位硬件问题的基本功，软硬联调必备。",
+   "hard": "异常波形分析与触发设置。",
+   "key": "示波器、逻辑分析仪、触发、测量",
+   "res": [
+    "示波器使用教程",
+    "逻辑分析仪实战"
+   ],
+   "pre": [
+    "dc"
+   ]
+  },
+  "motor": {
+   "name": "电机控制(BLDC/PMSM)",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "FOC/六步换相/PWM驱动/MOS桥/霍尔与编码器。",
+   "role": "机器人/无人机/汽车电控核心，宇树等公司刚需。",
+   "hard": "FOC 矢量控制与电流环调参。",
+   "key": "FOC、换相、MOS驱动、电流环",
+   "res": [
+    "《无刷直流电机控制》",
+    "STM32 电机控制库"
+   ],
+   "pre": [
+    "timer"
+   ]
+  },
+  "riscv": {
+   "name": "RISC-V架构",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "指令集/寄存器/特权模式/中断、核与SoC集成。",
+   "role": "国产芯片替代核心方向，政策红利大。",
+   "hard": "指令集细节与移植适配。",
+   "key": "指令集、特权模式、中断",
+   "res": [
+    "RISC-V 规范",
+    "《RISC-V 体系结构》"
+   ],
+   "pre": [
+    "dc"
+   ]
+  },
+  "autosar": {
+   "name": "AUTOSAR",
+   "cat": "系统",
+   "diff": 5,
+   "content": "CP：分层架构(BSW/RTE/应用)、ECU配置、通信栈；AP：SOA服务化/DDS，面向智驾域控与舱驾一体。",
+   "role": "汽车电子软件标配；CP用于传统ECU，AP是智驾域控方向，整车厂与Tier1需求大。",
+   "hard": "BSW 配置与集成复杂度。",
+   "key": "分层架构、BSW、RTE、CAN栈",
+   "res": [
+    "AUTOSAR 官方规范",
+    "达芬奇配置工具教程"
+   ],
+   "pre": [
+    "can"
+   ]
+  },
+  "fusa": {
+   "name": "功能安全(ISO 26262)",
+   "cat": "系统",
+   "diff": 5,
+   "content": "ASIL等级/安全机制/开发流程/FMEDA/安全文档。",
+   "role": "汽车/工业安全关键件入行门槛，高端岗稀缺。",
+   "hard": "安全分析与 ASIL 分解。",
+   "key": "ASIL、安全机制、流程、FMEDA",
+   "res": [
+    "ISO 26262 标准",
+    "《功能安全开发》"
+   ],
+   "pre": [
+    "autosar"
+   ]
+  },
+  "ros2": {
+   "name": "ROS2机器人",
+   "cat": "系统",
+   "diff": 4,
+   "content": "节点/话题/服务/动作、TF、launch、SLAM基础。",
+   "role": "机器人软件开发事实标准，具身智能基础。",
+   "hard": "分布式通信与实时性。",
+   "key": "节点话题、TF、参数、launch",
+   "res": [
+    "ROS2 官方教程",
+    "《机器人开发实践》"
+   ],
+   "pre": [
+    "linux",
+    "cpp"
+   ]
+  },
+  "dbg": {
+   "name": "软件调试",
+   "cat": "系统",
+   "diff": 2,
+   "content": "SWD/JTAG、断点/单步、core dump、SystemView/逻辑分析、栈溢出与内存越界排查。",
+   "role": "贯穿所有方向的基础技能，定位 bug 的效率决定开发效率。",
+   "hard": "core dump 分析与栈回溯。",
+   "key": "断点、单步、core dump、栈回溯",
+   "res": [
+    "《Software Debugging》",
+    "SystemView 教程",
+    "GDB 手册"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "usb": {
+   "name": "USB开发",
+   "cat": "协议",
+   "diff": 3,
+   "content": "USB2.0/描述符/枚举/CDC/HID/复合设备/电源管理。",
+   "role": "键鼠/U盘/调试工具/充电协议等通用交互。",
+   "hard": "枚举流程与描述符调试。",
+   "key": "描述符、枚举、CDC/HID",
+   "res": [
+    "《USB Complete》",
+    "STM32 USB库文档"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "flashfs": {
+   "name": "Flash文件系统",
+   "cat": "系统",
+   "diff": 3,
+   "content": "LittleFS/FatFS/磨损均衡/掉电保护/分区规划。",
+   "role": "配网信息/日志/OTA缓存存储，量产必备。",
+   "hard": "掉电一致性与磨损均衡。",
+   "key": "LittleFS、磨损均衡、掉电保护",
+   "res": [
+    "LittleFS 文档",
+    "FatFS 官网"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "ota": {
+   "name": "OTA升级",
+   "cat": "系统",
+   "diff": 4,
+   "content": "双bank/差分升级/签名校验/回滚/断点续传。",
+   "role": "IoT与量产产品标配，固件迭代的基础设施。",
+   "hard": "升级失败回滚与断电安全。",
+   "key": "双bank、差分、签名、回滚",
+   "res": [
+    "乐鑫 OTA 文档",
+    "MCUboot 项目"
+   ],
+   "pre": [
+    "flashfs"
+   ]
+  },
+  "mltool": {
+   "name": "模型部署工具链",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "ONNX/量化导出/RKNN/NCNN/算子适配/性能基准。",
+   "role": "边缘AI部署的真实中间层，连接模型与芯片。",
+   "hard": "算子不支持与精度验证。",
+   "key": "ONNX、RKNN/NCNN、算子映射、基准",
+   "res": [
+    "RKNN 文档",
+    "NCNN 教程"
+   ],
+   "pre": [
+    "tflite"
+   ]
+  },
+  "ksync": {
+   "name": "内核并发与同步",
+   "cat": "系统",
+   "diff": 4,
+   "content": "spinlock/mutex/等待队列/workqueue/原子操作/RCU。",
+   "role": "Linux驱动正确性核心，避免竞态与死锁。",
+   "hard": "锁粒度与死锁预防。",
+   "key": "锁机制、等待队列、workqueue",
+   "res": [
+    "《Linux设备驱动开发》",
+    "内核同步文档"
+   ],
+   "pre": [
+    "chardev"
+   ]
+  },
+  "http": {
+   "name": "HTTP/TLS",
+   "cat": "协议",
+   "diff": 3,
+   "content": "HTTP1.1/REST/JSON/HTTPS证书/mbedTLS加密通信。",
+   "role": "设备云对接、配网、固件下载。",
+   "hard": "TLS握手与证书管理。",
+   "key": "REST、JSON、TLS、证书",
+   "res": [
+    "《HTTP权威指南》",
+    "mbedTLS 文档"
+   ],
+   "pre": [
+    "sock"
+   ]
+  },
+  "imu": {
+   "name": "IMU/传感器融合",
+   "cat": "硬件",
+   "diff": 4,
+   "content": "陀螺仪/加速度计/磁力计、互补滤波/卡尔曼、姿态解算。",
+   "role": "机器人/无人机姿态与导航基础。",
+   "hard": "卡尔曼滤波与噪声调参。",
+   "key": "传感器校准、互补滤波、姿态解算",
+   "res": [
+    "《Kalman滤波应用》",
+    "MPU6050 DMP 文档"
+   ],
+   "pre": [
+    "i2c"
+   ]
+  },
+  "verify": {
+   "name": "仿真验证(Testbench/UVM)",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "Testbench/时序仿真/断言/SystemVerilog/UVM平台/覆盖率。",
+   "role": "FPGA正确性保障，高级岗必备。",
+   "hard": "UVM平台搭建与覆盖率收敛。",
+   "key": "Testbench、SV、UVM、覆盖率",
+   "res": [
+    "《UVM实战》",
+    "Vivado仿真教程"
+   ],
+   "pre": [
+    "timing"
+   ]
+  },
+  "testfw": {
+   "name": "测试框架与CI",
+   "cat": "系统",
+   "diff": 2,
+   "content": "Unity/CMock/单元测试/集成测试/HIL/CI流水线/Jenkins。",
+   "role": "嵌入式测试岗核心，量产质量保障。",
+   "hard": "可测试性设计(HAL接口注入)。",
+   "key": "Unity、CMock、CI、HIL",
+   "res": [
+    "Unity Test 文档",
+    "《敏捷软件测试》"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "harmony": {
+   "name": "HarmonyOS开发",
+   "cat": "系统",
+   "diff": 4,
+   "content": "ArkTS/Ability/HDF驱动框架/分布式软总线/LiteOS内核。",
+   "role": "鸿蒙生态设备开发，国产系统红利。",
+   "hard": "HDF驱动框架与分布式协同。",
+   "key": "ArkTS、Ability、HDF、分布式",
+   "res": [
+    "HarmonyOS官方文档",
+    "《鸿蒙应用开发》"
+   ],
+   "pre": [
+    "c",
+    "linux"
+   ]
+  },
+  "sec": {
+   "name": "安全启动与加密",
+   "cat": "协议",
+   "diff": 4,
+   "content": "SecureBoot/固件签名/HSM/密钥管理/AES-RSA/防抄板。",
+   "role": "IoT/汽车/金融设备安全刚需，高端岗位稀缺。",
+   "hard": "密钥全生命周期管理。",
+   "key": "SecureBoot、签名验签、密钥管理",
+   "res": [
+    "《嵌入式系统安全》",
+    "mbedTLS 安全文档"
+   ],
+   "pre": [
+    "ota"
+   ]
+  },
+  "lvgl": {
+   "name": "LVGL/GUI开发",
+   "cat": "系统",
+   "diff": 3,
+   "content": "LVGL控件/事件/样式/页面/资源管理/动画/性能优化。",
+   "role": "智能家居面板/穿戴/工控屏 GUI 开发，鸿蒙与 IoT 方向核心交互技术。",
+   "hard": "资源占用与渲染性能优化。",
+   "key": "控件创建、事件、样式、页面管理",
+   "res": [
+    "LVGL官方文档",
+    "SquareLine Studio教程",
+    "百问网LVGL实战"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "asm": {
+   "name": "ARM/RISC-V汇编",
+   "cat": "语言基础",
+   "diff": 3,
+   "content": "指令集/寄存器/寻址方式/启动代码/内联汇编/链接脚本。",
+   "role": "底层启动、性能优化与逆向调试必备，读懂启动文件与反汇编。",
+   "hard": "寄存器模型与栈布局。",
+   "key": "指令、启动代码、内联汇编",
+   "res": [
+    "《ARM Cortex-M3/M4权威指南》",
+    "《RISC-V手册》",
+    "GNU汇编器文档"
+   ],
+   "pre": [
+    "c",
+    "dc"
+   ]
+  },
+  "cmake": {
+   "name": "CMake构建",
+   "cat": "系统",
+   "diff": 2,
+   "content": "CMakeLists/交叉工具链/库链接/IDE集成。",
+   "role": "现代嵌入式工程标配，ESP-IDF/Zephyr/STM32Cube 均基于 CMake。",
+   "hard": "工具链与依赖传递。",
+   "key": "CMakeLists、工具链、链接",
+   "res": [
+    "CMake官方教程",
+    "《Modern CMake》"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "qt": {
+   "name": "Qt图形界面",
+   "cat": "系统",
+   "diff": 3,
+   "content": "Widgets/QML/信号槽/布局/多线程/交叉编译部署。",
+   "role": "嵌入式Linux人机界面主流框架，工控/车载/医疗面板刚需。",
+   "hard": "跨线程信号槽与渲染性能。",
+   "key": "Widgets/QML、信号槽、交叉编译",
+   "res": [
+    "Qt官方文档",
+    "《Qt5 Cadaques》"
+   ],
+   "pre": [
+    "cpp",
+    "linux"
+   ]
+  },
+  "zephyr": {
+   "name": "Zephyr RTOS",
+   "cat": "系统",
+   "diff": 3,
+   "content": "内核服务/设备树/Kconfig/驱动模型/网络栈。",
+   "role": "Linux基金会现代RTOS，IoT与穿戴国际化主流，招聘需求上升。",
+   "hard": "设备树与Kconfig配置体系。",
+   "key": "内核、设备树、Kconfig、驱动",
+   "res": [
+    "Zephyr官方文档",
+    "Zephyr Sample 例程"
+   ],
+   "pre": [
+    "c",
+    "freertos"
+   ]
+  },
+  "lin": {
+   "name": "LIN总线",
+   "cat": "协议",
+   "diff": 2,
+   "content": "帧结构/调度表/主从节点/诊断传输。",
+   "role": "车身低成本网络标配（车窗/车灯/座椅），与CAN互补。",
+   "hard": "调度表与唤醒时序。",
+   "key": "帧格式、调度表、主从",
+   "res": [
+    "LIN规范",
+    "车载网络教程"
+   ],
+   "pre": [
+    "can"
+   ]
+  },
+  "uds": {
+   "name": "UDS诊断(ISO 14229)",
+   "cat": "协议",
+   "diff": 3,
+   "content": "诊断会话/服务(22/2E/31/19)/DTC/刷写流程。",
+   "role": "汽车电子工程师日常，ECU诊断、标定与产线刷写。",
+   "hard": "会话状态机与安全访问。",
+   "key": "诊断服务、DTC、刷写",
+   "res": [
+    "ISO 14229标准",
+    "CANoe诊断教程"
+   ],
+   "pre": [
+    "can"
+   ]
+  },
+  "matter": {
+   "name": "Matter/Thread",
+   "cat": "协议",
+   "diff": 4,
+   "content": "Matter架构/数据模型/配网/认证/Thread边界路由器。",
+   "role": "智能家居互操作标准（Matter 1.5+），跨品牌设备互联。",
+   "hard": "配网流程与认证。",
+   "key": "数据模型、配网、边界路由器",
+   "res": [
+    "CSA Matter规范",
+    "Nordic Matter教程"
+   ],
+   "pre": [
+    "tcp",
+    "sock"
+   ]
+  },
+  "wdt": {
+   "name": "看门狗与可靠性",
+   "cat": "硬件",
+   "diff": 2,
+   "content": "IWDG/WWDG/喂狗策略/死机自恢复/冗余设计。",
+   "role": "工业产品量产必备，防死机卡死的最后防线。",
+   "hard": "喂狗窗口与任务监控。",
+   "key": "独立看门狗、窗口看门狗、监控",
+   "res": [
+    "ST参考手册",
+    "《嵌入式系统可靠性设计》"
+   ],
+   "pre": [
+    "stm32"
+   ]
+  },
+  "rust": {
+   "name": "Rust嵌入式",
+   "cat": "语言基础",
+   "diff": 3,
+   "content": "所有权/借用/no_std/embedded-hal/esp-rs(ESP-IDF官方Rust支持)。",
+   "role": "内存安全新选择：保时捷/沃尔沃等车厂量产落地，Ferrocene工具链通过功能安全认证，2026趋势技能。",
+   "hard": "所有权与借用检查器、unsafe边界。",
+   "key": "所有权、no_std、embedded-hal",
+   "res": [
+    "《嵌入式Rust之书》(官方免费)",
+    "Ferrocene文档"
+   ],
+   "pre": [
+    "c"
+   ]
+  },
+  "llmdeploy": {
+   "name": "LLM端侧部署",
+   "cat": "AI/EDA",
+   "diff": 4,
+   "content": "llama.cpp/GGUF量化/RKLLM/MLC-LLM/NPU跑LLM/KV Cache/多模态。",
+   "role": "2026边缘AI新热点：智能硬件、具身智能与端侧助手的模型落地层。",
+   "hard": "内存与带宽预算、量化精度损失、首token延迟。",
+   "key": "llama.cpp、GGUF量化、内存预算",
+   "res": [
+    "llama.cpp文档",
+    "RKLLM教程",
+    "MLC-LLM文档"
+   ],
+   "pre": [
+    "mltool"
+   ]
+  }
+ },
+ "paths": [
+  {
+   "id": "path-mcu",
+   "name": "MCU软件工程师",
+   "job": "job-mcu",
+   "period": "3-6个月",
+   "color": "#10b981",
+   "skills": [
+    "c",
+    "ds",
+    "dc",
+    "stm32",
+    "gpio",
+    "int",
+    "timer",
+    "uart",
+    "i2c",
+    "dma",
+    "dbg",
+    "usb",
+    "flashfs",
+    "lp",
+    "wdt"
+   ]
+  },
+  {
+   "id": "path-rtos",
+   "name": "RTOS工程师",
+   "job": "job-rtos",
+   "period": "6-9个月",
+   "color": "#f59e0b",
+   "skills": [
+    "c",
+    "dc",
+    "stm32",
+    "timer",
+    "uart",
+    "i2c",
+    "dbg",
+    "freertos",
+    "task",
+    "sync",
+    "mem",
+    "can",
+    "rtt",
+    "zephyr"
+   ]
+  },
+  {
+   "id": "path-linuxapp",
+   "name": "Linux应用工程师",
+   "job": "job-linuxapp",
+   "period": "6-12个月",
+   "color": "#d97706",
+   "skills": [
+    "c",
+    "cpp",
+    "linux",
+    "shell",
+    "cross",
+    "dbg",
+    "sysprog",
+    "thread",
+    "qt",
+    "tcp",
+    "sock",
+    "http",
+    "epoll",
+    "yocto"
+   ]
+  },
+  {
+   "id": "path-linuxdrv",
+   "name": "Linux驱动工程师",
+   "job": "job-linuxdrv",
+   "period": "9-15个月",
+   "color": "#ef4444",
+   "skills": [
+    "c",
+    "linux",
+    "shell",
+    "cross",
+    "cmake",
+    "dbg",
+    "kmod",
+    "chardev",
+    "ksync",
+    "dts",
+    "tcp",
+    "yocto"
+   ]
+  },
+  {
+   "id": "path-iot",
+   "name": "IoT工程师",
+   "job": "job-iot",
+   "period": "6-12个月",
+   "color": "#ea580c",
+   "skills": [
+    "c",
+    "py",
+    "dc",
+    "stm32",
+    "uart",
+    "esp",
+    "rust",
+    "tcp",
+    "sock",
+    "wifi",
+    "mqtt",
+    "flashfs",
+    "ota",
+    "ble",
+    "lora",
+    "zigbee",
+    "lp",
+    "lvgl",
+    "matter"
+   ]
+  },
+  {
+   "id": "path-ai",
+   "name": "边缘AI工程师",
+   "job": "job-ai",
+   "period": "9-15个月",
+   "color": "#dc2626",
+   "skills": [
+    "py",
+    "c",
+    "ds",
+    "pytorch",
+    "cpp",
+    "linux",
+    "tflite",
+    "mltool",
+    "quant",
+    "npu",
+    "llmdeploy"
+   ]
+  },
+  {
+   "id": "path-fpga",
+   "name": "FPGA工程师",
+   "job": "job-fpga",
+   "period": "6-12个月",
+   "color": "#b91c1c",
+   "skills": [
+    "c",
+    "dc",
+    "verilog",
+    "fsm",
+    "timing",
+    "cdc",
+    "verify",
+    "amba"
+   ]
+  },
+  {
+   "id": "path-proto",
+   "name": "协议栈工程师",
+   "job": "job-proto",
+   "period": "9-15个月",
+   "color": "#f97316",
+   "skills": [
+    "c",
+    "tcp",
+    "sock",
+    "lwip",
+    "usb",
+    "ble",
+    "can",
+    "modbus",
+    "lora",
+    "zigbee",
+    "matter"
+   ]
+  },
+  {
+   "id": "path-hw",
+   "name": "硬件工程师",
+   "job": "job-hw",
+   "period": "6-12个月",
+   "color": "#0891b2",
+   "skills": [
+    "c",
+    "dc",
+    "stm32",
+    "analog",
+    "scope",
+    "pcb",
+    "psu",
+    "emc",
+    "wdt"
+   ]
+  },
+  {
+   "id": "path-auto",
+   "name": "汽车电子工程师",
+   "job": "job-auto",
+   "period": "9-15个月",
+   "color": "#ca8a04",
+   "skills": [
+    "c",
+    "dc",
+    "stm32",
+    "dbg",
+    "flashfs",
+    "can",
+    "lin",
+    "uds",
+    "autosar",
+    "fusa",
+    "ota"
+   ]
+  },
+  {
+   "id": "path-robot",
+   "name": "机器人工程师",
+   "job": "job-robot",
+   "period": "9-15个月",
+   "color": "#db2777",
+   "skills": [
+    "c",
+    "dc",
+    "cpp",
+    "stm32",
+    "uart",
+    "i2c",
+    "timer",
+    "motor",
+    "imu",
+    "freertos",
+    "can",
+    "linux",
+    "ros2"
+   ]
+  },
+  {
+   "id": "path-riscv",
+   "name": "RISC-V工程师",
+   "job": "job-riscv",
+   "period": "6-12个月",
+   "color": "#4f46e5",
+   "skills": [
+    "c",
+    "dc",
+    "asm",
+    "stm32",
+    "riscv",
+    "linux",
+    "cross",
+    "cmake",
+    "freertos"
+   ]
+  },
+  {
+   "id": "path-test",
+   "name": "嵌入式测试工程师",
+   "job": "job-test",
+   "period": "3-6个月",
+   "color": "#0d9488",
+   "skills": [
+    "c",
+    "ds",
+    "dc",
+    "stm32",
+    "uart",
+    "dbg",
+    "testfw"
+   ]
+  },
+  {
+   "id": "path-harmony",
+   "name": "鸿蒙开发工程师",
+   "job": "job-harmony",
+   "period": "6-12个月",
+   "color": "#0e7490",
+   "skills": [
+    "c",
+    "cpp",
+    "linux",
+    "shell",
+    "cross",
+    "harmony",
+    "lvgl"
+   ]
+  },
+  {
+   "id": "path-verif",
+   "name": "芯片验证工程师",
+   "job": "job-verif",
+   "period": "9-15个月",
+   "color": "#7c3aed",
+   "skills": [
+    "c",
+    "dc",
+    "verilog",
+    "fsm",
+    "timing",
+    "cdc",
+    "verify",
+    "amba"
+   ]
+  },
+  {
+   "id": "path-sec",
+   "name": "嵌入式安全工程师",
+   "job": "job-sec",
+   "period": "6-12个月",
+   "color": "#334155",
+   "skills": [
+    "c",
+    "dc",
+    "stm32",
+    "tcp",
+    "sock",
+    "flashfs",
+    "ota",
+    "http",
+    "sec"
+   ]
+  }
+ ],
+ "jobs": {
+  "job-mcu": {
+   "id": "job-mcu",
+   "name": "MCU软件工程师",
+   "level": "基础",
+   "diff": 2,
+   "demand": 5,
+   "salary": "¥10-40K",
+   "color": "#10b981",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥10-18K",
+     "d": "外设驱动、裸机应用、硬件调试"
+    },
+    {
+     "t": "中级",
+     "s": "¥15-25K",
+     "d": "低功耗设计、量产维护"
+    },
+    {
+     "t": "高级",
+     "s": "¥22-40K",
+     "d": "系统架构、方案选型"
+    }
+   ],
+   "work": "MCU外设驱动与应用开发，低功耗设计、硬件联调与量产维护。",
+   "companies": [
+    "汇川技术",
+    "美的",
+    "TCL",
+    "海康威视",
+    "九号公司"
+   ],
+   "review": "入门友好、岗位量大，竞争激烈；3-5年后建议向RTOS/Linux进阶。",
+   "projects": [
+    "智能环境监测器",
+    "温控小风扇",
+    "ESP32-C3智能灯控",
+    "智能插座"
+   ]
+  },
+  "job-rtos": {
+   "id": "job-rtos",
+   "name": "RTOS工程师",
+   "level": "进阶",
+   "diff": 3,
+   "demand": 4,
+   "salary": "¥12-55K",
+   "color": "#f59e0b",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥12-20K",
+     "d": "多任务应用、任务通信"
+    },
+    {
+     "t": "中级",
+     "s": "¥20-32K",
+     "d": "RTOS移植裁剪、实时优化"
+    },
+    {
+     "t": "高级",
+     "s": "¥32-55K",
+     "d": "内核级优化、高可靠代码"
+    }
+   ],
+   "work": "多任务架构、任务通信、RTOS移植与实时性优化。",
+   "companies": [
+    "大疆",
+    "宁德时代",
+    "蔚来",
+    "比亚迪",
+    "汇川"
+   ],
+   "review": "车载/工业刚需，薪资成长好；内核原理是稀缺能力。",
+   "projects": [
+    "多任务温控系统",
+    "RT-Thread网关",
+    "低功耗穿戴demo"
+   ]
+  },
+  "job-linuxapp": {
+   "id": "job-linuxapp",
+   "name": "Linux应用工程师",
+   "level": "进阶",
+   "diff": 3,
+   "demand": 4,
+   "salary": "¥12-60K",
+   "color": "#d97706",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥12-20K",
+     "d": "应用开发、网络模块、UI"
+    },
+    {
+     "t": "中级",
+     "s": "¥20-35K",
+     "d": "系统架构、并发优化"
+    },
+    {
+     "t": "高级",
+     "s": "¥35-60K",
+     "d": "Yocto定制、性能调优"
+    }
+   ],
+   "work": "Linux用户态应用、网络服务、GUI、系统构建与优化。",
+   "companies": [
+    "华为",
+    "海康威视",
+    "大华",
+    "小米",
+    "商汤"
+   ],
+   "review": "需求量稳、通用性最强；可转系统架构或边缘AI。",
+   "projects": [
+    "网络服务程序",
+    "RK3588整机系统",
+    "Qt工业控制台",
+    "Yocto定制发行版"
+   ]
+  },
+  "job-linuxdrv": {
+   "id": "job-linuxdrv",
+   "name": "Linux驱动工程师",
+   "level": "高阶",
+   "diff": 4,
+   "demand": 3,
+   "salary": "¥15-80K",
+   "color": "#ef4444",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-25K",
+     "d": "字符设备驱动、设备树"
+    },
+    {
+     "t": "中级",
+     "s": "¥25-45K",
+     "d": "内核移植、复杂外设驱动"
+    },
+    {
+     "t": "高级",
+     "s": "¥45-80K",
+     "d": "子系统优化、安全启动"
+    }
+   ],
+   "work": "内核驱动开发、BSP移植、设备树配置与量产优化。",
+   "companies": [
+    "华为",
+    "地平线",
+    "寒武纪",
+    "全志",
+    "瑞芯微"
+   ],
+   "review": "稀缺高薪、壁垒高；成长周期长，适合长期深耕。",
+   "projects": [
+    "按键中断驱动",
+    "摄像头V4L2驱动",
+    "i.MX6完整BSP移植"
+   ]
+  },
+  "job-iot": {
+   "id": "job-iot",
+   "name": "IoT工程师",
+   "level": "进阶",
+   "diff": 3,
+   "demand": 4,
+   "salary": "¥10-50K",
+   "color": "#ea580c",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥10-18K",
+     "d": "设备联网、协议对接、OTA"
+    },
+    {
+     "t": "中级",
+     "s": "¥18-30K",
+     "d": "端云协同、网关开发"
+    },
+    {
+     "t": "高级",
+     "s": "¥30-50K",
+     "d": "安全、大规模管理"
+    }
+   ],
+   "work": "设备联网、MQTT云端通信、OTA与设备管理、低功耗组网。",
+   "companies": [
+    "涂鸦智能",
+    "海尔",
+    "绿米",
+    "萤石",
+    "移远"
+   ],
+   "review": "AIoT风口，需求增长快；端云协同经验值钱。",
+   "projects": [
+    "ESP32监测节点",
+    "WiFi智能插座",
+    "LoRa网关",
+    "BLE手环同步"
+   ]
+  },
+  "job-ai": {
+   "id": "job-ai",
+   "name": "边缘AI工程师",
+   "level": "高阶",
+   "diff": 4,
+   "demand": 3,
+   "salary": "¥18-100K",
+   "color": "#dc2626",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥18-30K",
+     "d": "模型部署、推理验证"
+    },
+    {
+     "t": "中级",
+     "s": "¥30-55K",
+     "d": "量化压缩、NPU适配"
+    },
+    {
+     "t": "高级",
+     "s": "¥55-100K",
+     "d": "模型压缩体系、异构加速"
+    }
+   ],
+   "work": "深度学习模型端侧部署、量化压缩、NPU适配与推理优化。",
+   "companies": [
+    "大疆",
+    "地平线",
+    "瑞芯微",
+    "寒武纪",
+    "商汤"
+   ],
+   "review": "高薪热门、复合人才稀缺；需同时懂AI与嵌入式。",
+   "projects": [
+    "MCU关键词唤醒",
+    "振动故障分类",
+    "端侧人脸检测",
+    "Jetson推理服务"
+   ]
+  },
+  "job-fpga": {
+   "id": "job-fpga",
+   "name": "FPGA工程师",
+   "level": "高阶",
+   "diff": 5,
+   "demand": 2,
+   "salary": "¥15-70K",
+   "color": "#b91c1c",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-25K",
+     "d": "RTL设计、仿真验证"
+    },
+    {
+     "t": "中级",
+     "s": "¥25-42K",
+     "d": "系统设计、时序收敛"
+    },
+    {
+     "t": "高级",
+     "s": "¥42-70K",
+     "d": "复杂架构、UVM验证"
+    }
+   ],
+   "work": "Verilog RTL设计、时序约束收敛、仿真验证与软硬协同。",
+   "companies": [
+    "华为",
+    "中兴",
+    "紫光同创",
+    "安路",
+    "航天院所"
+   ],
+   "review": "小众稳定、越老越吃香；通信/军工/算力薪资高。",
+   "projects": [
+    "UART控制器",
+    "DDS信号发生器",
+    "AXI简易SoC",
+    "数字滤波器"
+   ]
+  },
+  "job-proto": {
+   "id": "job-proto",
+   "name": "协议栈工程师",
+   "level": "进阶",
+   "diff": 4,
+   "demand": 2,
+   "salary": "¥15-60K",
+   "color": "#f97316",
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-22K",
+     "d": "BLE/WiFi应用开发"
+    },
+    {
+     "t": "中级",
+     "s": "¥22-38K",
+     "d": "LwIP优化、协议栈移植"
+    },
+    {
+     "t": "高级",
+     "s": "¥38-60K",
+     "d": "底层优化、5G组网"
+    }
+   ],
+   "work": "TCP/IP与无线协议栈开发优化、组网与互通调试。",
+   "companies": [
+    "华为",
+    "中兴",
+    "乐鑫",
+    "移远",
+    "联发科"
+   ],
+   "review": "通信根基扎实，可向5G、芯片原厂延伸。",
+   "projects": [
+    "MCU TCP服务器",
+    "BLE手环",
+    "CAN多节点",
+    "LoRa组网"
+   ]
+  },
+  "job-hw": {
+   "id": "job-hw",
+   "name": "硬件工程师",
+   "level": "基础",
+   "diff": 3,
+   "salary": "¥10-60K",
+   "color": "#0891b2",
+   "demand": 4,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥10-18K",
+     "d": "原理图/PCB/样机调试"
+    },
+    {
+     "t": "中级",
+     "s": "¥18-32K",
+     "d": "高速板设计、EMC整改"
+    },
+    {
+     "t": "高级",
+     "s": "¥32-60K",
+     "d": "系统架构、量产与认证"
+    }
+   ],
+   "work": "元器件选型、原理图与PCB设计、硬件调试、EMC/信号完整性整改，配合软件联调与量产支持。",
+   "companies": [
+    "大疆",
+    "汇川技术",
+    "华为",
+    "迈瑞医疗",
+    "宁德时代"
+   ],
+   "review": "岗位量大、软硬结合；动手能力与工程积累重要，EMC/高速设计经验稀缺。",
+   "projects": [
+    "STM32最小系统板",
+    "传感器采集板",
+    "机器人主控板",
+    "电源模块"
+   ]
+  },
+  "job-auto": {
+   "id": "job-auto",
+   "name": "汽车电子工程师",
+   "level": "进阶",
+   "diff": 4,
+   "salary": "¥15-80K",
+   "color": "#ca8a04",
+   "demand": 4,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-25K",
+     "d": "CAN/诊断、ECU开发"
+    },
+    {
+     "t": "中级",
+     "s": "¥25-45K",
+     "d": "AUTOSAR BSW/集成"
+    },
+    {
+     "t": "高级",
+     "s": "¥45-80K",
+     "d": "功能安全、系统架构"
+    }
+   ],
+   "work": "车载ECU软硬件开发、AUTOSAR架构实现、CAN/LIN通信与诊断、功能安全(ISO 26262)。",
+   "companies": [
+    "蔚来",
+    "比亚迪",
+    "博世",
+    "大陆集团",
+    "经纬恒润"
+   ],
+   "review": "新能源车爆发、需求旺盛；AUTOSAR与功能安全门槛高，资深岗薪资上限大。",
+   "projects": [
+    "CAN节点开发",
+    "AUTOSAR工程搭建",
+    "ECU刷写工具",
+    "功能安全文档"
+   ]
+  },
+  "job-robot": {
+   "id": "job-robot",
+   "name": "机器人工程师",
+   "level": "高阶",
+   "diff": 4,
+   "salary": "¥15-90K",
+   "color": "#db2777",
+   "demand": 3,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-28K",
+     "d": "电机控制/驱动开发"
+    },
+    {
+     "t": "中级",
+     "s": "¥28-50K",
+     "d": "运动控制、系统集成"
+    },
+    {
+     "t": "高级",
+     "s": "¥50-90K",
+     "d": "具身智能、算法协同"
+    }
+   ],
+   "work": "无刷电机(FOC)控制、ROS2软件栈、IMU融合、机械臂/移动机器人系统开发。",
+   "companies": [
+    "宇树科技",
+    "大疆",
+    "优必选",
+    "节卡机器人",
+    "极智嘉"
+   ],
+   "review": "具身智能风口、薪资高；电机控制+ROS复合技能稀缺。",
+   "projects": [
+    "无刷电机FOC控制",
+    "ROS2移动小车",
+    "机械臂关节控制",
+    "IMU姿态融合"
+   ]
+  },
+  "job-riscv": {
+   "id": "job-riscv",
+   "name": "RISC-V工程师",
+   "level": "进阶",
+   "diff": 4,
+   "salary": "¥15-70K",
+   "color": "#4f46e5",
+   "demand": 2,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-28K",
+     "d": "内核移植、外设适配"
+    },
+    {
+     "t": "中级",
+     "s": "¥28-45K",
+     "d": "工具链、BSP开发"
+    },
+    {
+     "t": "高级",
+     "s": "¥45-70K",
+     "d": "芯片验证、架构设计"
+    }
+   ],
+   "work": "RISC-V内核移植、BSP/工具链开发、SoC验证与适配，国产芯片替代方向。",
+   "companies": [
+    "算能",
+    "芯来科技",
+    "平头哥",
+    "兆易创新",
+    "全志科技"
+   ],
+   "review": "国产替代政策红利、成长快；目前岗位尚少但前景广阔。",
+   "projects": [
+    "RISC-V开发板移植",
+    "FreeRTOS移植",
+    "自定义外设驱动"
+   ]
+  },
+  "job-test": {
+   "id": "job-test",
+   "name": "嵌入式测试工程师",
+   "level": "基础",
+   "diff": 2,
+   "salary": "¥10-45K",
+   "color": "#0d9488",
+   "demand": 4,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥10-18K",
+     "d": "单元测试、用例编写"
+    },
+    {
+     "t": "中级",
+     "s": "¥18-30K",
+     "d": "测试框架、自动化/CI"
+    },
+    {
+     "t": "高级",
+     "s": "¥30-45K",
+     "d": "HIL测试、质量体系"
+    }
+   ],
+   "work": "嵌入式软件测试、Unity/CMock单元测试、CI流水线、HIL硬件在环测试与质量保障。",
+   "companies": [
+    "华为",
+    "汇川技术",
+    "大疆",
+    "宁德时代",
+    "海康威视"
+   ],
+   "review": "岗位量大、门槛友好，是切入嵌入式的好路径；自动化测试经验增值快。",
+   "projects": [
+    "Unity单元测试工程",
+    "CI自动化流水线",
+    "HIL台架测试",
+    "协议一致性测试"
+   ]
+  },
+  "job-harmony": {
+   "id": "job-harmony",
+   "name": "鸿蒙开发工程师",
+   "level": "进阶",
+   "diff": 3,
+   "salary": "¥13-65K",
+   "color": "#0e7490",
+   "demand": 3,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥13-25K",
+     "d": "ArkTS应用、Ability开发"
+    },
+    {
+     "t": "中级",
+     "s": "¥25-40K",
+     "d": "HDF驱动、系统裁剪"
+    },
+    {
+     "t": "高级",
+     "s": "¥40-65K",
+     "d": "分布式协同、生态架构"
+    }
+   ],
+   "work": "鸿蒙设备端应用与系统开发、HDF驱动适配、分布式软总线应用与生态适配。",
+   "companies": [
+    "华为",
+    "美的",
+    "海尔",
+    "软通动力",
+    "中软国际"
+   ],
+   "review": "国产系统生态红利、岗位增长快；HDF驱动与分布式经验稀缺。",
+   "projects": [
+    "鸿蒙智能家居APP",
+    "HDF传感器驱动",
+    "分布式流转demo",
+    "OpenHarmony板卡适配"
+   ]
+  },
+  "job-verif": {
+   "id": "job-verif",
+   "name": "芯片验证工程师",
+   "level": "高阶",
+   "diff": 4,
+   "salary": "¥15-80K",
+   "color": "#7c3aed",
+   "demand": 3,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-30K",
+     "d": "Testbench、功能仿真"
+    },
+    {
+     "t": "中级",
+     "s": "¥30-50K",
+     "d": "UVM平台、断言"
+    },
+    {
+     "t": "高级",
+     "s": "¥50-80K",
+     "d": "验证架构、覆盖率收敛"
+    }
+   ],
+   "work": "芯片/SoC验证、UVM验证平台搭建、断言与覆盖率分析、回归与signoff。",
+   "companies": [
+    "华为海思",
+    "紫光展锐",
+    "寒武纪",
+    "燧原科技",
+    "中兴微"
+   ],
+   "review": "半导体风口、高薪稳定；UVM与验证方法学是核心壁垒，资深岗稀缺。",
+   "projects": [
+    "AXI接口UVM平台",
+    "APB外设验证",
+    "覆盖率收敛流程",
+    "验证回归CI"
+   ]
+  },
+  "job-sec": {
+   "id": "job-sec",
+   "name": "嵌入式安全工程师",
+   "level": "进阶",
+   "diff": 4,
+   "salary": "¥15-70K",
+   "color": "#334155",
+   "demand": 3,
+   "tiers": [
+    {
+     "t": "初级",
+     "s": "¥15-28K",
+     "d": "SecureBoot、固件签名"
+    },
+    {
+     "t": "中级",
+     "s": "¥28-45K",
+     "d": "密钥管理、安全OTA"
+    },
+    {
+     "t": "高级",
+     "s": "¥45-70K",
+     "d": "HSM、安全架构"
+    }
+   ],
+   "work": "嵌入式安全方案设计、SecureBoot/固件签名、密钥管理、安全OTA与防抄板加固。",
+   "companies": [
+    "华为",
+    "奇安信",
+    "吉利",
+    "小鹏",
+    "三未信安"
+   ],
+   "review": "IoT/汽车安全刚需、人才稀缺；懂硬件又懂安全者凤毛麟角，薪资上限高。",
+   "projects": [
+    "SecureBoot启动链",
+    "固件签名验签",
+    "安全OTA差分升级",
+    "HSM密钥管理demo"
+   ]
+  }
+ },
+ "resources": {
+  "videos": {
+   "title": "视频课程（B站等）",
+   "items": [
+    {
+     "n": "正点原子官方",
+     "d": "全栈：STM32/Linux/RTOS，零基础到进阶的标杆"
+    },
+    {
+     "n": "韦东山",
+     "d": "Linux驱动 / STM32 HAL库「瑞士军刀」，百万播放"
+    },
+    {
+     "n": "江协科技(江科大)",
+     "d": "STM32/51 零基础启蒙，接线、调试细节全部讲透，无废话"
+    },
+    {
+     "n": "鱼C-小甲鱼",
+     "d": "C语言与数据结构入门，风趣幽默，底层基础救星"
+    },
+    {
+     "n": "野火电子",
+     "d": "STM32/FreeRTOS/RT-Thread 全套，用比喻拆解中断、RTOS 难点"
+    },
+    {
+     "n": "铁头山羊",
+     "d": "STM32 标准库入门，讲解细致、新手友好"
+    },
+    {
+     "n": "keysking",
+     "d": "STM32CubeMX 路线，思路清晰"
+    },
+    {
+     "n": "尚硅谷",
+     "d": "Ubuntu/Linux应用/FreeRTOS 系统课，覆盖面广"
+    },
+    {
+     "n": "爱编程的大丙",
+     "d": "Linux/数据结构/网络/线程，硬核基础"
+    },
+    {
+     "n": "朱有鹏",
+     "d": "嵌入式Linux应用开发，逻辑性强"
+    },
+    {
+     "n": "电子Online(陈俊祥)",
+     "d": "硬件调试与焊接工艺实战，故障排查拆解到步骤"
+    },
+    {
+     "n": "嵌入式客栈",
+     "d": "系统化嵌入式教程，适合碎片化学习"
+    },
+    {
+     "n": "唐老师讲电赛",
+     "d": "电赛电源题/PCB设计，实战向"
+    },
+    {
+     "n": "稚晖君",
+     "d": "嵌入式AI/硬件，硬核进阶"
+    }
+   ]
+  },
+  "platforms": {
+   "title": "学习平台",
+   "items": [
+    {
+     "n": "中国大学MOOC",
+     "d": "北理工《单片机原理》/哈工大《嵌入式系统》"
+    },
+    {
+     "n": "国家智慧教育平台",
+     "d": "苏州大学《嵌入式系统及应用》系统课（学堂在线）"
+    },
+    {
+     "n": "Coursera",
+     "d": "Embedded Software Essentials（CU 系统课）"
+    },
+    {
+     "n": "RT-Thread 大学",
+     "d": "国产 RTOS 官方学习平台，中文文档"
+    },
+    {
+     "n": "立创开源硬件平台",
+     "d": "oshwhub：开源硬件项目与电路分享"
+    },
+    {
+     "n": "AUTOSAR 官网",
+     "d": "汽车电子软件标准规范与资料"
+    },
+    {
+     "n": "电子发烧友(华秋)",
+     "d": "电子工程师社区：PCB/单片机/硬件测试/供应链全栈"
+    },
+    {
+     "n": "摩尔吧",
+     "d": "芯片原厂技术培训：电源设计/射频/行业方案，对接产业资源"
+    },
+    {
+     "n": "AMD FPGA教育中心",
+     "d": "原 Xilinx：Verilog/数字信号处理/Zynq SoC/AI加速器"
+    }
+   ]
+  },
+  "tools": {
+   "title": "在线工具与开发环境",
+   "items": [
+    {
+     "n": "Wokwi",
+     "d": "在线电路仿真，没有开发板也能练"
+    },
+    {
+     "n": "Tinkercad",
+     "d": "网页版电路设计，拖拽入门"
+    },
+    {
+     "n": "STM32CubeIDE",
+     "d": "ST 官方免费 IDE，HAL库开发标配"
+    },
+    {
+     "n": "PlatformIO+VS Code",
+     "d": "跨平台嵌入式开发神器"
+    },
+    {
+     "n": "QEMU",
+     "d": "ARM 虚拟开发板，早期验证软件逻辑"
+    },
+    {
+     "n": "Proteus",
+     "d": "电路与单片机仿真"
+    },
+    {
+     "n": "立创EDA",
+     "d": "国产免费 PCB 设计工具，中文教程丰富"
+    },
+    {
+     "n": "J-Link/ST-Link",
+     "d": "在线调试与程序下载，调试器标配"
+    },
+    {
+     "n": "逻辑分析仪(如Saleae)",
+     "d": "抓取 SPI/I2C/UART 时序波形，协议排错神器"
+    },
+    {
+     "n": "Git",
+     "d": "代码版本管理，团队协作基本功"
+    },
+    {
+     "n": "Valgrind",
+     "d": "内存泄漏与越界检测，稳定性排查利器"
+    }
+   ]
+  },
+  "community": {
+   "title": "社区与文档",
+   "items": [
+    {
+     "n": "电子工程世界",
+     "d": "EEWorld：技术问答与行业资讯"
+    },
+    {
+     "n": "21ic",
+     "d": "行业前沿动态与讨论"
+    },
+    {
+     "n": "CSDN",
+     "d": "海量实战笔记与踩坑记录"
+    },
+    {
+     "n": "Stack Overflow",
+     "d": "英文报错排查第一站"
+    },
+    {
+     "n": "正点原子/野火论坛",
+     "d": "开发板配套论坛，调试难题常能找到答案"
+    },
+    {
+     "n": "RT-Thread 官方论坛",
+     "d": "国内最活跃的嵌入式 OS 社区之一"
+    },
+    {
+     "n": "芯片厂商官网",
+     "d": "ST/NXP/乐鑫 官方手册与参考文档"
+    }
+   ]
+  },
+  "open": {
+   "title": "开源项目（练手与源码）",
+   "items": [
+    {
+     "n": "RT-Thread",
+     "d": "国产物联网 OS，GitHub 1.2w+ star"
+    },
+    {
+     "n": "FreeRTOS 源码",
+     "d": "学习任务调度与内存管理机制"
+    },
+    {
+     "n": "Zephyr",
+     "d": "Linux 基金会 IoT RTOS，支持 450+ 开发板"
+    },
+    {
+     "n": "0voice/embedded_software_learn",
+     "d": "嵌入式学习路线+面试题合集（GitHub）"
+    },
+    {
+     "n": "MCUboot",
+     "d": "安全启动/OTA 引导，学习签名校验与回滚"
+    },
+    {
+     "n": "littlefs",
+     "d": "为嵌入式设计的 Flash 文件系统，掉电安全"
+    },
+    {
+     "n": "OpenHarmony",
+     "d": "鸿蒙开源底座，设备开发与生态适配"
+    },
+    {
+     "n": "TFLite Micro",
+     "d": "MCU 端侧推理官方框架，边缘AI入门"
+    },
+    {
+     "n": "connectedhomeip",
+     "d": "Matter 官方 SDK，智能家居互操作开发起点"
+    },
+    {
+     "n": "LVGL",
+     "d": "轻量开源 GUI 库，MCU 屏幕/面板开发主流"
+    },
+    {
+     "n": "llama.cpp",
+     "d": "端侧 LLM 推理事实标准，GGUF 量化与跨 CPU/NPU 部署"
+    }
+   ]
+  },
+  "books": {
+   "title": "推荐书籍",
+   "items": [
+    {
+     "n": "《C和指针》",
+     "d": "C语言指针与内存模型，嵌入式必读"
+    },
+    {
+     "n": "《C语言深度解剖》",
+     "d": "底层特性深入讲解，绕开经典坑"
+    },
+    {
+     "n": "《嵌入式C语言自我修养》",
+     "d": "面向嵌入式开发的 C 语言工程实践"
+    },
+    {
+     "n": "《ARM Cortex-M3/M4权威指南》",
+     "d": "深入理解 MCU 内核、中断与内存"
+    },
+    {
+     "n": "《FreeRTOS内核实现与应用开发实战》",
+     "d": "RTOS 原理与内核源码解读"
+    },
+    {
+     "n": "《嵌入式Linux应用开发完全手册》",
+     "d": "Linux 应用与驱动开发进阶"
+    },
+    {
+     "n": "《UVM实战》",
+     "d": "SystemVerilog 验证平台搭建与覆盖率收敛，芯片验证必读"
+    },
+    {
+     "n": "《机器人学导论》",
+     "d": "运动学/动力学/轨迹规划，机器人方向理论基石"
+    },
+    {
+     "n": "《嵌入式系统安全权威指南》",
+     "d": "安全启动/密钥管理/防抄板，嵌入式安全经典"
+    },
+    {
+     "n": "《C专家编程》",
+     "d": "C 语言底层机制与经典陷阱，进阶必读"
+    }
+   ]
+  }
+ }
+}
