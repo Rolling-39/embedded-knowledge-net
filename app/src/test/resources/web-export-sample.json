@@ -1,0 +1,750 @@
+{
+  "type": "embed-kb-v9.21",
+  "exportedAt": "2026-10-24T09:48:46.996Z",
+  "theme": "",
+  "reduce": "0",
+  "animoff": "0",
+  "progress": [
+    {
+      "jobId": "job-mcu",
+      "mastery": 35,
+      "done": false,
+      "note": "冲鸭"
+    }
+  ],
+  "skillDone": {
+    "c": {
+      "st": "done",
+      "note": "基础打完",
+      "updated": 1700000000000,
+      "startDate": "2026-01-05",
+      "goalDate": "2026-06-01"
+    },
+    "rust": {
+      "st": "learning",
+      "note": "进行中",
+      "updated": 1700000000000,
+      "startDate": "2026-02-01",
+      "goalDate": ""
+    },
+    "cpp": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "py": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "ds": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "stm32": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "gpio": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "int": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "timer": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "uart": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "i2c": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "dma": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "lp": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "esp": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "freertos": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "task": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "sync": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "mem": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "rtt": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "linux": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "shell": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "cross": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "sysprog": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "thread": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "epoll": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "kmod": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "chardev": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "dts": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "yocto": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "tcp": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "sock": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "mqtt": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "ble": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "wifi": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "lora": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "lwip": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "can": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "modbus": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "zigbee": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "pytorch": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "tflite": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "quant": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "npu": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "verilog": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "fsm": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "timing": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "cdc": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "amba": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "analog": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "pcb": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "psu": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "emc": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "scope": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "motor": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "riscv": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "autosar": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "fusa": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "ros2": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "dbg": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "usb": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "flashfs": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "ota": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "mltool": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "ksync": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "http": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "imu": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "verify": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "testfw": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "harmony": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "sec": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "lvgl": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "asm": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "cmake": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "qt": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "zephyr": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "lin": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "uds": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "matter": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "wdt": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "llmdeploy": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    },
+    "us1001": {
+      "st": "none",
+      "note": "",
+      "updated": 0,
+      "startDate": "",
+      "goalDate": ""
+    }
+  },
+  "jobState": {
+    "job-mcu": {
+      "st": "learning",
+      "updated": 1700000000000
+    },
+    "job-rtos": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-linuxapp": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-linuxdrv": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-iot": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-ai": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-fpga": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-proto": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-hw": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-auto": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-robot": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-riscv": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-test": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-harmony": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-verif": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-sec": {
+      "st": "none",
+      "updated": 0
+    },
+    "job-x1": {
+      "st": "none",
+      "updated": 0
+    }
+  },
+  "userSkills": {
+    "c": {
+      "name": "C语言(定制版)",
+      "cat": "语言基础",
+      "diff": 2,
+      "content": "按自己的节奏过了一遍",
+      "user": true
+    },
+    "us1001": {
+      "name": "我的独门技能",
+      "cat": "系统",
+      "diff": 3,
+      "content": "x",
+      "role": "x",
+      "hard": "x",
+      "key": "x",
+      "res": [
+        "r1"
+      ],
+      "pre": [
+        "c"
+      ],
+      "user": true
+    },
+    "dc": {
+      "name": "数字电路基础",
+      "cat": "硬件",
+      "diff": 3,
+      "deleted": true
+    }
+  },
+  "userPaths": {
+    "path-mcu": {
+      "id": "path-mcu",
+      "name": "MCU软件工程师",
+      "job": "job-mcu",
+      "period": "3-6个月",
+      "color": "#10b981",
+      "skills": [
+        "c",
+        "rust",
+        "stm32",
+        "gpio",
+        "uart"
+      ],
+      "user": true
+    },
+    "path-fpga": {
+      "id": "path-fpga",
+      "name": "FPGA工程师",
+      "job": "job-fpga",
+      "period": "6-12个月",
+      "color": "#b91c1c",
+      "skills": [
+        "c",
+        "dc",
+        "verilog"
+      ],
+      "deleted": true
+    }
+  },
+  "userJobs": {
+    "job-x1": {
+      "id": "job-x1",
+      "name": "自定义岗位",
+      "level": "进阶",
+      "diff": 3,
+      "demand": 3,
+      "salary": "¥20-40K",
+      "color": "#059669",
+      "tiers": [
+        {
+          "t": "初级",
+          "s": "¥20-25K",
+          "d": "入门"
+        }
+      ],
+      "work": "做东西",
+      "companies": [
+        "某公司"
+      ],
+      "review": "自定义",
+      "projects": [
+        "项目A"
+      ],
+      "user": true
+    }
+  },
+  "userRes": [
+    {
+      "id": "ur2001",
+      "cat": "books",
+      "n": "我的私藏书",
+      "d": "自定义备注"
+    }
+  ]
+}
