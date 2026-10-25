@@ -51,6 +51,24 @@ fun ProgressScreen(vm: AppViewModel) {
     val e = ui.effective
 
     LazyColumn(Modifier.fillMaxSize()) {
+        // 空状态引导
+        val hasAnyRecord = ui.skillDone.values.any { it.st != "none" } || ui.jobState.values.any { it.st != "none" }
+        if (!hasAnyRecord) {
+            item(key = "guide") {
+                com.rolling.learningguider.ui.common.KbCard(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                    container = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+                ) {
+                    Text("从这里开始你的学习追踪", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        "到「知识网」长按技能节点快速标记，或在「知识库」打开技能详情点「学习中」——你的进度、目标日和岗位掌握度都会显示在这里。",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 6.dp),
+                    )
+                }
+            }
+        }
         // 今日卡片
         val learningSkills = e.skills.entries.filter { (ui.skillDone[it.key]?.st) == "learning" }
         val learningJobs = e.jobs.entries.filter { (ui.jobState[it.key]?.st) == "learning" }

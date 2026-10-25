@@ -1,5 +1,6 @@
 package com.rolling.learningguider.data.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,6 +8,7 @@ import kotlinx.serialization.Serializable
  * 所有字段带默认值：对应网页版导入时的「字段兜底」，缺失字段安全落到默认。
  */
 
+@Immutable
 @Serializable
 data class Skill(
     val name: String = "",
@@ -26,9 +28,11 @@ data class Skill(
     }
 }
 
+@Immutable
 @Serializable
 data class JobTier(val t: String = "", val s: String = "", val d: String = "")
 
+@Immutable
 @Serializable
 data class Job(
     val id: String = "",
@@ -51,6 +55,7 @@ data class Job(
     }
 }
 
+@Immutable
 @Serializable
 data class LearnPath(
     val id: String = "",
@@ -64,6 +69,7 @@ data class LearnPath(
 )
 
 /** 自定义学习资源（网页版 userRes 条目：id 为导入白名单必需字段） */
+@Immutable
 @Serializable
 data class ResourceItem(
     val id: String = "",
@@ -89,6 +95,7 @@ data class BuiltinData(
     val resources: Map<String, ResourceCategory> = emptyMap(),
 )
 
+@Immutable
 @Serializable
 data class SkillDone(
     val st: String = "none",
@@ -98,6 +105,7 @@ data class SkillDone(
     val goalDate: String = "",
 )
 
+@Immutable
 @Serializable
 data class JobState(val st: String = "none", val updated: Long = 0)
 
@@ -112,6 +120,7 @@ data class ProgressEntry(
 )
 
 /** 合并后的有效数据（UI 只读这一层） */
+@Immutable
 data class EffectiveData(
     val version: String,
     val skills: Map<String, Skill> = emptyMap(),

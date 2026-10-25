@@ -1,7 +1,12 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.rolling.learningguider.ui.net
 
 import android.provider.Settings
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -34,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +48,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.lerp
+import androidx.compose.ui.util.lerp as lerpF
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
@@ -67,6 +75,8 @@ import com.rolling.learningguider.ui.UiState
 import com.rolling.learningguider.ui.common.Dot
 import com.rolling.learningguider.ui.common.parseHexColor
 import com.rolling.learningguider.ui.icons.AppIcons
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 /**
  * 知识网（手机端纵向泳道布局）：
@@ -125,6 +135,7 @@ fun NetScreen(vm: AppViewModel) {
     var sheetSkill by rememberSaveable { mutableStateOf<String?>(null) }
     var sheetJob by rememberSaveable { mutableStateOf<String?>(null) }
     var skillFormId by rememberSaveable { mutableStateOf<String?>(null) }
+    var resetTick by rememberSaveable { mutableStateOf(0) }
     val context = LocalContext.current
 
     val systemMotionOff = remember {
@@ -174,6 +185,23 @@ fun NetScreen(vm: AppViewModel) {
             singleLine = true,
             shape = MaterialTheme.shapes.extraLarge,
         )
+        if (ui.showNetHint && focusSkill == null) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.10f))
+                    .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    "点节点看详情 · 长按快标状态 · 双指缩放/拖动 · 双击放大",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.weight(1f),
+                )
+                androidx.compose.material3.TextButton(onClick = { vm.dismissNetHint() }) { Text("知道了") }
+            }
+        }
         if (focusSkill != null) {
             Row(
                 Modifier
@@ -197,15 +225,26 @@ fun NetScreen(vm: AppViewModel) {
                 motionOn = motionOn,
                 onSkillTap = { sheetSkill = it },
                 onJobTap = { sheetJob = it },
-                onSkillLongPress = { id ->
-                    val next = when (ui.skillDone[id]?.st ?: "none") {
-                        "none" -> "learning"
-                        "learning" -> "done"
-                        else -> "none"
-                    }
-                    vm.setSkillStatus(id, next)
-                },
+                onSkillLongPress = vm::cycleSkillStatus,
+                resetTick = resetTick,
             )
+            androidx.compose.material3.Surface(
+                onClick = { resetTick++ },
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.92f),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
+                shadowElevation = 3.dp,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+            ) {
+                Text(
+                    "复位",
+                    color = androidx.compose.ui.graphics.Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
         }
     }
 
@@ -263,6 +302,7 @@ fun NetCanvas(
     onSkillTap: (String) -> Unit,
     onJobTap: (String) -> Unit,
     onSkillLongPress: (String) -> Unit,
+    resetTick: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val layout = remember(ui.effective) { NetLayout.build(ui.effective) }
@@ -270,6 +310,34 @@ fun NetCanvas(
     var offset by remember { mutableStateOf(Offset.Zero) }
     var fitted by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
+    val scope = rememberCoroutineScope()
+    var animJob by remember { mutableStateOf<Job?>(null) }
+
+    fun defaultView(size: IntSize): Pair<Float, Offset> {
+        val sc = (size.width / (NetLayout.LANE_W * 2.05f)).coerceIn(0.5f, 2.6f)
+        val x = if (layout.laneXs.isNotEmpty()) size.width / 2f - layout.laneXs[0] * sc else 0f
+        return sc to Offset(x, 24f)
+    }
+
+    /** 视图平滑动画（chip/搜索定位、复位、双击缩放共用） */
+    fun animateViewTo(targetScale: Float, targetOffset: Offset) {
+        animJob?.cancel()
+        animJob = scope.launch {
+            val s0 = scale
+            val o0 = offset
+            val t = Animatable(0f)
+            try {
+                t.animateTo(1f, spring(dampingRatio = 0.8f, stiffness = Spring.StiffnessMediumLow)) {
+                    val f = t.value
+                    scale = lerpF(s0, targetScale, f)
+                    offset = lerp(o0, targetOffset, f)
+                }
+            } finally {
+                scale = targetScale
+                offset = targetOffset
+            }
+        }
+    }
 
     val labelBg = MaterialTheme.colorScheme.background
     val labelBorder = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
@@ -320,24 +388,33 @@ fun NetCanvas(
 
     fun laneOf(pathId: String): Int = ui.effective.paths.indexOfFirst { it.id == pathId }
 
+    // 复位视图（外层按钮触发）
+    LaunchedEffect(resetTick) {
+        if (resetTick > 0 && canvasSize != IntSize.Zero) {
+            val (sc, of) = defaultView(canvasSize)
+            animateViewTo(sc, of)
+        }
+    }
+
     // 选中路径 → 自动把该泳道平移到屏幕中央
     LaunchedEffect(activePathId, fitted) {
         if (!fitted || activePathId.isEmpty()) return@LaunchedEffect
         val lane = laneOf(activePathId)
         if (lane in layout.laneXs.indices) {
-            offset = offset.copy(x = canvasSize.width / 2f - layout.laneXs[lane] * scale)
+            animateViewTo(scale, Offset(canvasSize.width / 2f - layout.laneXs[lane] * scale, offset.y))
         }
     }
     // 搜索 → 居中第一个匹配节点
     LaunchedEffect(query, fitted) {
+        kotlinx.coroutines.delay(250) // 防抖：打字过程不逐字跳动
         val q2 = query.trim().lowercase()
         if (q2.isBlank() || canvasSize == IntSize.Zero) return@LaunchedEffect
         val node = layout.skillNodes.firstOrNull {
             ui.effective.skills[it.skillId]?.name?.lowercase()?.contains(q2) == true
         } ?: return@LaunchedEffect
-        offset = Offset(
-            canvasSize.width / 2f - node.x * scale,
-            canvasSize.height / 2f - node.y * scale,
+        animateViewTo(
+            scale,
+            Offset(canvasSize.width / 2f - node.x * scale, canvasSize.height / 2f - node.y * scale),
         )
     }
 
@@ -386,19 +463,24 @@ fun NetCanvas(
                 canvasSize = size
                 if (!fitted && size.width > 0 && layout.laneXs.isNotEmpty()) {
                     fitted = true
-                    // 默认约两条泳道可见，首泳道居中
-                    scale = (size.width / (NetLayout.LANE_W * 2.05f)).coerceIn(0.5f, 2.6f)
-                    offset = Offset(size.width / 2f - layout.laneXs[0] * scale, 24f)
+                    val (sc, of) = defaultView(size)
+                    scale = sc
+                    offset = of
                 }
             }
             .pointerInput(layout) {
                 detectTapGestures(
                     onTap = { p -> hitTest(p)?.let { (id, isJob) -> if (isJob) onJobTap(id) else onSkillTap(id) } },
                     onLongPress = { p -> hitTest(p)?.let { (id, isJob) -> if (!isJob) onSkillLongPress(id) } },
+                    onDoubleTap = { p ->
+                        val target = if (scale > 1.7f) 1f else 2.3f
+                        animateViewTo(target, p - (p - offset) * (target / scale))
+                    },
                 )
             }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
+                    animJob?.cancel()
                     val newScale = (scale * zoom).coerceIn(0.4f, 3.5f)
                     offset = centroid - (centroid - offset) * (newScale / scale)
                     scale = newScale

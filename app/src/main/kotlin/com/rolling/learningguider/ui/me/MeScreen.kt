@@ -17,6 +17,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
@@ -74,9 +75,15 @@ fun MeScreen(vm: AppViewModel) {
                 .padding(bottom = 24.dp),
         ) {
         SectionCard("外观") {
-            SettingRow("跟随系统", ui.themeMode.isEmpty()) { vm.setTheme("") }
-            SettingRow("浅色", ui.themeMode == "light") { vm.setTheme("light") }
-            SettingRow("深色", ui.themeMode == "dark") { vm.setTheme("dark") }
+            androidx.compose.material3.SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                listOf("" to "跟随系统", "light" to "浅色", "dark" to "深色").forEachIndexed { i, (mode, label) ->
+                    SegmentedButton(
+                        selected = ui.themeMode == mode,
+                        onClick = { vm.setTheme(mode) },
+                        shape = androidx.compose.material3.SegmentedButtonDefaults.itemShape(index = i, count = 3),
+                    ) { Text(label) }
+                }
+            }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f))
             Row(Modifier.fillMaxWidth().padding(vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {

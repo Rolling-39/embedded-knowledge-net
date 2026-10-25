@@ -81,7 +81,7 @@ fun Modifier.pressable(onClick: () -> Unit): Modifier = composed {
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (pressed) 0.97f else 1f,
-        animationSpec = spring(stiffness = 600f),
+        animationSpec = spring(dampingRatio = 0.62f, stiffness = 900f),
         label = "pressScale",
     )
     this
@@ -207,6 +207,54 @@ fun ThreeColorBar(done: Int, learning: Int, total: Int, modifier: Modifier = Mod
             if (done > 0) Box(Modifier.weight(done.toFloat()).fillMaxHeight().background(StatusDone))
             if (learning > 0) Box(Modifier.weight(learning.toFloat()).fillMaxHeight().background(StatusLearning))
             if (remaining > 0) Box(Modifier.weight(remaining.toFloat()).fillMaxHeight().background(MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)))
+        }
+    }
+}
+
+/** 统一卡片容器：全 App 视觉一致性（圆角/阴影/留白同一套） */
+@Composable
+fun KbCard(
+    modifier: Modifier = Modifier,
+    container: Color = MaterialTheme.colorScheme.surface,
+    content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit,
+) {
+    androidx.compose.material3.Card(
+        modifier = modifier,
+        colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = container),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        androidx.compose.foundation.layout.Column(Modifier.padding(14.dp), content = content)
+    }
+}
+
+/** 空状态：图标 + 主文案 + 引导文案（列表无结果/无数据用） */
+@Composable
+fun EmptyHint(text: String, modifier: Modifier = Modifier, hint: String = "") {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        androidx.compose.material3.Icon(
+            com.rolling.learningguider.ui.icons.AppIcons.Search,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.size(34.dp),
+        )
+        Text(
+            text,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.padding(top = 10.dp),
+        )
+        if (hint.isNotBlank()) {
+            Text(
+                hint,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp),
+            )
         }
     }
 }

@@ -82,7 +82,8 @@ class KbRepository(
         scope.launch {
             val t = db.stateDao().kv(KV_THEME)?.value ?: ""
             val r = db.stateDao().kv(KV_REDUCE)?.value == "1"
-            _prefs.value = Prefs(t, r)
+            val h = db.stateDao().kv(KV_NETHINT)?.value != "0"
+            _prefs.value = Prefs(t, r, h)
         }
     }
 
@@ -99,7 +100,7 @@ class KbRepository(
 
     /* ============== 偏好 ============== */
 
-    data class Prefs(val theme: String = "", val reduceMotion: Boolean = false)
+    data class Prefs(val theme: String = "", val reduceMotion: Boolean = false, val showNetHint: Boolean = true)
 
     private val _prefs = MutableStateFlow(Prefs())
     val prefs: StateFlow<Prefs> = _prefs.asStateFlow()
@@ -221,6 +222,11 @@ class KbRepository(
         _prefs.value = _prefs.value.copy(reduceMotion = on)
     }
 
+    suspend fun dismissNetHint() = withContext(Dispatchers.IO) {
+        db.stateDao().putKv(com.rolling.learningguider.data.db.KvEntity(KV_NETHINT, "0"))
+        _prefs.value = _prefs.value.copy(showNetHint = false)
+    }
+
     /* ============== 导入 / 导出 ============== */
 
     suspend fun importBackup(text: String, merge: Boolean): ImportStats = withContext(Dispatchers.IO) {
@@ -303,5 +309,6 @@ class KbRepository(
         const val KV_THEME = "theme"
         const val KV_REDUCE = "reduce"
         const val KV_ANIMOFF = "animoff"
+        const val KV_NETHINT = "netHint"
     }
 }

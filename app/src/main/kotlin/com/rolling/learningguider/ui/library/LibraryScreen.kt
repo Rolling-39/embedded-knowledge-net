@@ -8,7 +8,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -26,12 +30,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rolling.learningguider.ui.AppViewModel
 import com.rolling.learningguider.ui.UiState
 import com.rolling.learningguider.ui.icons.AppIcons
+import kotlinx.coroutines.launch
 
 /** 知识库：技能 / 岗位 / 路径 / 资源 四分页 + 搜索 + 详情弹层 */
 @Composable
@@ -49,7 +55,10 @@ fun LibraryScreen(vm: AppViewModel) {
     var formJob by rememberSaveable { mutableStateOf<String?>(null) }
     var formPath by rememberSaveable { mutableStateOf<String?>(null) }
     var formRes by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val snackbar = remember { SnackbarHostState() }
 
+    Box(Modifier.fillMaxSize()) {
     Column(Modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = page) {
             listOf("技能", "岗位", "路径", "资源").forEachIndexed { i, title ->
@@ -86,7 +95,7 @@ fun LibraryScreen(vm: AppViewModel) {
             modifier = Modifier.fillMaxSize(),
         ) { p ->
             when (p) {
-                0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formSkill = "" })
+                0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formSkill = "" }, onQuickStatus = vm::cycleSkillStatus)
                 1 -> JobListPage(ui, query, onJobClick = { sheetJob = it }, onRestore = vm::restoreRecord, onAdd = { formJob = "" })
                 2 -> PathListPage(ui, query, onPathClick = { sheetPath = it }, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formPath = "" })
                 else -> ResourceListPage(ui, query, onDeleteResource = { vm.deleteResource(it) }, onAdd = { formRes = true })
@@ -144,7 +153,7 @@ fun LibraryScreen(vm: AppViewModel) {
         SkillFormSheet(
             initial = initial,
             ui = ui,
-            onSave = { vm.saveSkill(formSkill?.takeIf { it.isNotBlank() }, it); formSkill = null },
+            onSave = { vm.saveSkill(formSkill?.takeIf { it.isNotBlank() }, it); formSkill = null; scope.launch { snackbar.showSnackbar("技能已保存") } },
             onDismiss = { formSkill = null },
         )
     }
@@ -152,7 +161,7 @@ fun LibraryScreen(vm: AppViewModel) {
         val initial = formJob?.takeIf { it.isNotBlank() }?.let { ui.effective.jobs[it] }
         JobFormSheet(
             initial = initial,
-            onSave = { vm.saveJob(formJob?.takeIf { it.isNotBlank() }, it); formJob = null },
+            onSave = { vm.saveJob(formJob?.takeIf { it.isNotBlank() }, it); formJob = null; scope.launch { snackbar.showSnackbar("岗位已保存") } },
             onDismiss = { formJob = null },
         )
     }
@@ -161,22 +170,18 @@ fun LibraryScreen(vm: AppViewModel) {
         PathFormSheet(
             initial = initial,
             ui = ui,
-            onSave = { vm.savePath(formPath?.takeIf { it.isNotBlank() }, it); formPath = null },
+            onSave = { vm.savePath(formPath?.takeIf { it.isNotBlank() }, it); formPath = null; scope.launch { snackbar.showSnackbar("路线已保存") } },
             onDismiss = { formPath = null },
         )
     }
     if (formRes) {
         ResourceFormSheet(
             initial = null,
-            onSave = { vm.addResource(it); formRes = false },
+            onSave = { vm.addResource(it); formRes = false; scope.launch { snackbar.showSnackbar("资源已添加") } },
             onDismiss = { formRes = false },
         )
     }
-}
-
-@Composable
-fun EmptyHint(text: String) {
-    Row(Modifier.fillMaxWidth().padding(24.dp)) {
-        Text(text, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    SnackbarHost(hostState = snackbar, modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
+

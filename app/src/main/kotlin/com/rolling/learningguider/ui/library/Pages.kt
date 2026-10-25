@@ -1,8 +1,9 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 
 package com.rolling.learningguider.ui.library
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import com.rolling.learningguider.data.model.Skill
 import com.rolling.learningguider.ui.HiddenItem
 import com.rolling.learningguider.ui.UiState
 import com.rolling.learningguider.ui.common.BodyText
+import com.rolling.learningguider.ui.common.EmptyHint
 import com.rolling.learningguider.ui.common.Dot
 import com.rolling.learningguider.ui.common.InfoLabel
 import com.rolling.learningguider.ui.common.StarRow
@@ -52,7 +54,7 @@ import com.rolling.learningguider.ui.common.levelColor
 /* ============== 技能字典：按分类分组 + 吸顶 + 搜索 ============== */
 
 @Composable
-fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit, onAdd: () -> Unit = {}) {
+fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, onRestore: (String) -> Unit, onAdd: () -> Unit = {}, onQuickStatus: (String) -> Unit = {}) {
     val e = ui.effective
     val q = query.trim()
     val cats = Skill.CATEGORIES + e.skills.values.map { it.cat }.filter { it !in Skill.CATEGORIES }.distinct()
@@ -81,10 +83,12 @@ fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, on
                     }
                 }
             }
-            items(filtered, key = { it.key }) { (id, s) -> SkillRow(id, s, ui, onSkillClick) }
+            items(filtered, key = { it.key }) { (id, s) ->
+                Box(Modifier.animateItem()) { SkillRow(id, s, ui, onSkillClick, onQuickStatus) }
+            }
         }
         if (q.isNotEmpty() && e.skills.values.none { it.name.contains(q, true) || it.content.contains(q, true) || it.key.contains(q, true) }) {
-            item { EmptyHint("没有匹配「$q」的技能") }
+            item { EmptyHint("没有匹配「$q」的技能", hint = "试试技能关键词，如 STM32 / Linux / Rust") }
         }
         item { HiddenRestoreRow(ui.hiddenSkills, "技能", onRestore) }
         item { Spacer(Modifier.height(16.dp)) }
@@ -92,12 +96,12 @@ fun SkillListPage(ui: UiState, query: String, onSkillClick: (String) -> Unit, on
 }
 
 @Composable
-private fun SkillRow(id: String, s: Skill, ui: UiState, onClick: (String) -> Unit) {
+private fun SkillRow(id: String, s: Skill, ui: UiState, onClick: (String) -> Unit, onQuickStatus: (String) -> Unit) {
     val st = ui.skillDone[id]?.st ?: "none"
     Row(
         Modifier
             .fillMaxWidth()
-            .pressable { onClick(id) }
+            .combinedClickable(onClick = { onClick(id) }, onLongClick = { onQuickStatus(id) })
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -117,8 +121,21 @@ private fun SkillRow(id: String, s: Skill, ui: UiState, onClick: (String) -> Uni
                 modifier = Modifier.padding(top = 2.dp),
             )
         }
-        if (st == "learning") InfoLabel("学习中")
-        else if (st == "done") Text("已学", style = MaterialTheme.typography.labelMedium, color = statusColor(st))
+        if (st != "none") {
+            Surface(
+                color = statusColor(st).copy(alpha = 0.12f),
+                shape = RoundedCornerShape(50),
+                onClick = { onQuickStatus(id) },
+            ) {
+                Text(
+                    if (st == "learning") "学习中" else "已学",
+                    color = statusColor(st),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                )
+            }
+        }
     }
 }
 
@@ -131,8 +148,8 @@ fun JobListPage(ui: UiState, query: String, onJobClick: (String) -> Unit, onRest
         .filter { q.isEmpty() || it.name.contains(q, true) || it.work.contains(q, true) || it.review.contains(q, true) }
     LazyColumn(Modifier.fillMaxSize()) {
         item(key = "add-job") { AddButtonRow("＋ 新增岗位", onAdd) }
-        items(jobs.toList(), key = { it.id }) { j -> JobCard(j, onJobClick) }
-        if (jobs.isEmpty()) item { EmptyHint("没有匹配「$q」的岗位") }
+        items(jobs.toList(), key = { it.id }) { j -> Box(Modifier.animateItem()) { JobCard(j, onJobClick) } }
+        if (jobs.isEmpty()) item { EmptyHint("没有匹配「$q」的岗位", hint = "试试岗位名或技能关键词") }
         item { HiddenRestoreRow(ui.hiddenJobs, "岗位", onRestore) }
         item { Spacer(Modifier.height(16.dp)) }
     }
@@ -179,8 +196,8 @@ fun PathListPage(ui: UiState, query: String, onPathClick: (String) -> Unit, onSk
     val paths = ui.effective.paths.filter { q.isEmpty() || it.name.contains(q, true) }
     LazyColumn(Modifier.fillMaxSize()) {
         item(key = "add-path") { AddButtonRow("＋ 新增路线", onAdd) }
-        items(paths, key = { it.id }) { p -> PathCard(p, ui, onPathClick, onSkillClick) }
-        if (paths.isEmpty()) item { EmptyHint("没有匹配「$q」的路线") }
+        items(paths, key = { it.id }) { p -> Box(Modifier.animateItem()) { PathCard(p, ui, onPathClick, onSkillClick) } }
+        if (paths.isEmpty()) item { EmptyHint("没有匹配「$q」的路线", hint = "或点右上角「＋ 新增路线」创建自己的路线") }
         item { HiddenRestoreRow(ui.hiddenPaths, "路线", onRestore) }
         item { Spacer(Modifier.height(16.dp)) }
     }

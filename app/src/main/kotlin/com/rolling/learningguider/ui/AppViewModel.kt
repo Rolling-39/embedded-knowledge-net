@@ -20,8 +20,10 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
 /** 隐藏项（墓碑）条目：列表底部「已隐藏可恢复」用 */
+@androidx.compose.runtime.Immutable
 data class HiddenItem(val id: String, val kind: String, val name: String)
 
+@androidx.compose.runtime.Immutable
 data class UiState(
     val effective: EffectiveData = EffectiveData(""),
     val skillDone: Map<String, SkillDone> = emptyMap(),
@@ -29,6 +31,7 @@ data class UiState(
     val progress: Map<String, ProgressEntry> = emptyMap(),
     val themeMode: String = "",
     val reduceMotion: Boolean = false,
+    val showNetHint: Boolean = true,
     val hiddenSkills: List<HiddenItem> = emptyList(),
     val hiddenJobs: List<HiddenItem> = emptyList(),
     val hiddenPaths: List<HiddenItem> = emptyList(),
@@ -60,6 +63,7 @@ class AppViewModel(private val repo: KbRepository) : ViewModel() {
             progress = progress,
             themeMode = prefs.theme,
             reduceMotion = prefs.reduceMotion,
+            showNetHint = prefs.showNetHint,
             hiddenSkills = hidden.filter { it.kind == KbRepository.KIND_SKILL },
             hiddenJobs = hidden.filter { it.kind == KbRepository.KIND_JOB },
             hiddenPaths = hidden.filter { it.kind == KbRepository.KIND_PATH },
@@ -77,6 +81,17 @@ class AppViewModel(private val repo: KbRepository) : ViewModel() {
     fun deleteResource(id: String) = launch { repo.deleteResource(id) }
     fun setTheme(mode: String) = launch { repo.setTheme(mode) }
     fun setReduceMotion(on: Boolean) = launch { repo.setReduceMotion(on) }
+    fun dismissNetHint() = launch { repo.dismissNetHint() }
+
+    /** 状态轮转：未学→学习中→已学→未学（知识网长按 / 列表长按共用） */
+    fun cycleSkillStatus(id: String) = launch {
+        val next = when (ui.value.skillDone[id]?.st ?: "none") {
+            "none" -> "learning"
+            "learning" -> "done"
+            else -> "none"
+        }
+        repo.setSkillStatus(id, next)
+    }
 
     /* ============== 新增 / 编辑 ============== */
 

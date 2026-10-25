@@ -70,8 +70,13 @@ fun StatusButtons(current: String, onSet: (String) -> Unit, labels: Triple<Strin
         listOf("none" to labels.first, "learning" to labels.second, "done" to labels.third).forEach { (st, label) ->
             val selected = current == st
             val color = statusColor(st)
+            val bg by androidx.compose.animation.animateColorAsState(
+                targetValue = if (selected) color else MaterialTheme.colorScheme.surfaceVariant,
+                animationSpec = androidx.compose.animation.core.tween(220),
+                label = "stBtn",
+            )
             Surface(
-                color = if (selected) color else MaterialTheme.colorScheme.surfaceVariant,
+                color = bg,
                 shape = RoundedCornerShape(50),
                 onClick = { onSet(st) },
                 modifier = Modifier.weight(1f),
@@ -330,7 +335,7 @@ fun JobDetailSheet(
                 job.tiers.forEach { t ->
                     Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                         TagChip(t.t, MaterialTheme.colorScheme.primary)
-                        Text(t.s, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp).width(90.dp))
+                        Text(t.s, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp).width(104.dp))
                         Text(t.d, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
