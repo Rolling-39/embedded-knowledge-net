@@ -1,12 +1,18 @@
 package com.rolling.learningguider.ui.library
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -27,15 +32,13 @@ import androidx.compose.ui.unit.dp
 import com.rolling.learningguider.ui.AppViewModel
 import com.rolling.learningguider.ui.UiState
 import com.rolling.learningguider.ui.icons.AppIcons
-import kotlinx.coroutines.launch
 
 /** 知识库：技能 / 岗位 / 路径 / 资源 四分页 + 搜索 + 详情弹层 */
 @Composable
 fun LibraryScreen(vm: AppViewModel) {
     val ui by vm.ui.collectAsState()
     var query by rememberSaveable { mutableStateOf("") }
-    val pagerState = rememberPagerState { 4 }
-    val scope = rememberCoroutineScope()
+    var page by rememberSaveable { mutableStateOf(0) }
 
     // 弹层状态：当前打开的技能 / 岗位 / 路径
     var sheetSkill by rememberSaveable { mutableStateOf<String?>(null) }
@@ -48,11 +51,11 @@ fun LibraryScreen(vm: AppViewModel) {
     var formRes by rememberSaveable { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = pagerState.currentPage) {
+        TabRow(selectedTabIndex = page) {
             listOf("技能", "岗位", "路径", "资源").forEachIndexed { i, title ->
                 Tab(
-                    selected = pagerState.currentPage == i,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(i) } },
+                    selected = page == i,
+                    onClick = { page = i },
                     text = { Text(title) },
                 )
             }
@@ -63,7 +66,7 @@ fun LibraryScreen(vm: AppViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            placeholder = { Text("搜索${listOf("技能", "岗位", "路径", "资源")[pagerState.currentPage]}…", style = MaterialTheme.typography.bodyMedium) },
+            placeholder = { Text("搜索${listOf("技能", "岗位", "路径", "资源").getOrElse(page) { "技能" }}…", style = MaterialTheme.typography.bodyMedium) },
             leadingIcon = { Icon(AppIcons.Search, contentDescription = null) },
             trailingIcon = {
                 if (query.isNotEmpty()) {
@@ -73,8 +76,16 @@ fun LibraryScreen(vm: AppViewModel) {
             singleLine = true,
             shape = MaterialTheme.shapes.extraLarge,
         )
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-            when (page) {
+        AnimatedContent(
+            targetState = page,
+            transitionSpec = {
+                (fadeIn(tween(200)) + slideInHorizontally(tween(220)) { if (targetState > initialState) it / 12 else -it / 12 })
+                    .togetherWith(fadeOut(tween(150)))
+            },
+            label = "libPages",
+            modifier = Modifier.fillMaxSize(),
+        ) { p ->
+            when (p) {
                 0 -> SkillListPage(ui, query, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formSkill = "" })
                 1 -> JobListPage(ui, query, onJobClick = { sheetJob = it }, onRestore = vm::restoreRecord, onAdd = { formJob = "" })
                 2 -> PathListPage(ui, query, onPathClick = { sheetPath = it }, onSkillClick = { sheetSkill = it }, onRestore = vm::restoreRecord, onAdd = { formPath = "" })
