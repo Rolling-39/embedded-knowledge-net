@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -221,5 +224,28 @@ fun CategoryProgressRow(cat: String, done: Int, learning: Int, total: Int) {
             Text("$done / $total", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         ThreeColorBar(done, learning, total, Modifier.padding(top = 6.dp))
+    }
+}
+
+/* ============== 弹层滚动容器 ============== */
+
+/**
+ * BottomSheet 内容容器：LazyColumn 单 item 方案。
+ * 直接用 Column+verticalScroll 嵌套在 ModalBottomSheet 里会在内容较长时
+ * 与 sheet 的拖拽关闭手势发生嵌套滚动冲突（反复抽搐），LazyColumn 可正确消费滚动。
+ */
+@Composable
+fun SheetScroll(maxHeight: Dp = 660.dp, content: @Composable () -> Unit) {
+    LazyColumn(
+        Modifier
+            .fillMaxWidth()
+            .heightIn(max = maxHeight),
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 32.dp),
+    ) {
+        item {
+            Column(Modifier.fillMaxWidth()) {
+                content()
+            }
+        }
     }
 }

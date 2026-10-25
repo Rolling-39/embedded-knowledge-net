@@ -120,6 +120,13 @@ fun MeScreen(vm: AppViewModel) {
             InfoLabel("嵌入式知识网 v$version · 单机离线 · 数据存本机")
             InfoLabel("内置内容版本：${ui.effective.version.ifEmpty { "加载中…" }}（81 技能 / 16 路径 / 16 岗位）")
                 InfoLabel("内容以网页版 Learning_Guider 为单一事实源，随 App 版本更新")
+                Text(
+                    "© Rolling",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 10.dp),
+                )
             }
         }
         SnackbarHost(hostState = snackbar, modifier = Modifier.align(Alignment.BottomCenter))

@@ -222,14 +222,11 @@ fun SkillFormSheet(initial: Skill?, ui: UiState, onSave: (Skill) -> Unit, onDism
     var resText by rememberSaveable { mutableStateOf(initial?.res?.joinToString("\n") ?: "") }
     var preIds by rememberSaveable { mutableStateOf(initial?.pre ?: emptyList()) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier.fillMaxWidth()
-                .heightIn(max = 680.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 680.dp) {
             Text(if (initial == null) "新增技能" else "编辑技能", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Field("名称 *", name, { name = it })
@@ -283,14 +280,11 @@ fun JobFormSheet(initial: Job?, onSave: (Job) -> Unit, onDismiss: () -> Unit) {
     var companies by rememberSaveable { mutableStateOf(initial?.companies?.joinToString("\n") ?: "") }
     var projects by rememberSaveable { mutableStateOf(initial?.projects?.joinToString("\n") ?: "") }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier.fillMaxWidth()
-                .heightIn(max = 680.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 680.dp) {
             Text(if (initial == null) "新增岗位" else "编辑岗位", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Field("名称 *", name, { name = it })
@@ -352,14 +346,11 @@ fun PathFormSheet(initial: LearnPath?, ui: UiState, onSave: (LearnPath) -> Unit,
     var period by rememberSaveable { mutableStateOf(initial?.period ?: "") }
     var skillIds by rememberSaveable { mutableStateOf(initial?.skills ?: emptyList()) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier.fillMaxWidth()
-                .heightIn(max = 680.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 680.dp) {
             Text(if (initial == null) "新增路线" else "编辑路线", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Field("名称 *", name, { name = it })
@@ -415,14 +406,11 @@ fun ResourceFormSheet(initial: ResourceItem?, onSave: (ResourceItem) -> Unit, on
     var cat by rememberSaveable { mutableStateOf(initial?.cat?.takeIf { it.isNotBlank() } ?: "videos") }
     val cats = listOf("videos", "platforms", "tools", "community", "open", "books")
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier.fillMaxWidth()
-                .heightIn(max = 560.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = androidx.compose.material3.rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 580.dp) {
             Text(if (initial == null) "新增资源" else "编辑资源", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Field("名称 *", n, { n = it })

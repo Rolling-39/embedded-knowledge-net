@@ -28,6 +28,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -170,15 +172,11 @@ fun SkillDetailSheet(
     val relatedJobs = ui.effective.paths.filter { skillId in it.skills }.mapNotNull { ui.effective.jobs[it.job] }
     var confirmDelete by remember { mutableStateOf(false) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(max = 640.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 660.dp) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TagChip(skill.cat, catColor(skill.cat))
                 Spacer(Modifier.width(10.dp))
@@ -307,15 +305,11 @@ fun JobDetailSheet(
     val note = ui.progress[jobId]?.note ?: ""
     var confirmDelete by remember { mutableStateOf(false) }
 
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(max = 640.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 660.dp) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(job.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 TagChip(job.level, levelColor(job.level))
@@ -406,15 +400,11 @@ fun PathDetailSheet(
     var confirmDelete by remember { mutableStateOf(false) }
     val doneCnt = path.skills.count { (ui.skillDone[it]?.st ?: "none") == "done" }
     val learningCnt = path.skills.count { (ui.skillDone[it]?.st ?: "none") == "learning" }
-    ModalBottomSheet(onDismissRequest = onDismiss) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .heightIn(max = 640.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 32.dp),
-        ) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+    ) {
+        com.rolling.learningguider.ui.common.SheetScroll(maxHeight = 660.dp) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Dot(parseHexColor(path.color), 12.dp)
                 Text(path.name, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 10.dp).weight(1f))

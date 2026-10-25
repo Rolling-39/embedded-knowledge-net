@@ -19,10 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,28 +28,32 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
@@ -64,57 +65,53 @@ import com.rolling.learningguider.data.model.EffectiveData
 import com.rolling.learningguider.ui.AppViewModel
 import com.rolling.learningguider.ui.UiState
 import com.rolling.learningguider.ui.common.Dot
-import com.rolling.learningguider.ui.common.catColor
 import com.rolling.learningguider.ui.common.parseHexColor
 import com.rolling.learningguider.ui.icons.AppIcons
 
-/* ============== 布局算法（移植网页版 layoutNet/netH，坐标系一致） ============== */
-
+/**
+ * 知识网（手机端纵向泳道布局）：
+ * 每条学习路径 = 一条竖直泳道，技能按学习顺序自上而下串联（粗彩色连线 + 步骤序号），
+ * 泳道底部是目标岗位色块。默认视野约两条泳道，左右平移切换路径、双指缩放；
+ * 所有文字在内容坐标系绘制，天然随缩放等比缩放。
+ */
 object NetLayout {
-    val CAT_X = linkedMapOf(
-        "语言基础" to 90f, "硬件" to 320f, "系统" to 560f, "协议" to 800f, "AI/EDA" to 1040f,
-    )
-    const val JOB_X = 1260f
-    const val ROW_H = 36f
-    const val TOP = 46f
-    const val JOB_H = 56f
-    const val JOB_TOP = 50f
-    const val W = 1380f
-    const val NODE_R = 15f
-    const val JOB_W = 148f
-    const val JOB_HH = 40f
+    const val LANE_W = 240f
+    const val HEADER_H = 120f
+    const val ROW_H = 108f
+    const val NODE_R = 22f
+    const val MARGIN = 50f
+    const val JOB_W = 210f
+    const val JOB_H = 62f
 
-    fun build(e: EffectiveData): Layout {
-        val pos = HashMap<String, Offset>()
-        CAT_X.forEach { (cat, x) ->
-            var i = 0
-            e.skills.forEach { (id, s) ->
-                if (s.cat == cat) {
-                    pos[id] = Offset(x, TOP + i * ROW_H)
-                    i++
-                }
-            }
-        }
-        val jobRects = LinkedHashMap<String, Rect>()
-        e.jobs.entries.forEachIndexed { i, (id, _) ->
-            val y = JOB_TOP + i * JOB_H
-            jobRects[id] = Rect(JOB_X - JOB_W / 2, y - JOB_HH / 2, JOB_X + JOB_W / 2, y + JOB_HH / 2)
-        }
-        var h = 0f
-        CAT_X.keys.forEach { cat ->
-            val n = e.skills.values.count { it.cat == cat }
-            if (n > 0) h = maxOf(h, TOP + (n - 1) * ROW_H + 32f)
-        }
-        h = maxOf(h, JOB_TOP + (e.jobs.size - 1).coerceAtLeast(0) * JOB_H + 40f)
-        return Layout(pos, jobRects, W, maxOf(960f, h + 20f))
-    }
+    data class SkillNode(val skillId: String, val lane: Int, val order: Int, val x: Float, val y: Float)
+    data class JobNode(val jobId: String, val lane: Int, val x: Float, val y: Float)
 
     data class Layout(
-        val pos: Map<String, Offset>,
-        val jobRects: Map<String, Rect>,
+        val skillNodes: List<SkillNode>,
+        val jobNodes: List<JobNode>,
+        val laneXs: List<Float>,
         val W: Float,
         val H: Float,
     )
+
+    fun build(e: EffectiveData): Layout {
+        val paths = e.paths
+        if (paths.isEmpty()) return Layout(emptyList(), emptyList(), emptyList(), 800f, 800f)
+        val laneXs = paths.indices.map { MARGIN + it * LANE_W + LANE_W / 2 }
+        val nodes = mutableListOf<SkillNode>()
+        var maxLen = 0
+        paths.forEachIndexed { i, p ->
+            p.skills.forEachIndexed { j, sid ->
+                nodes += SkillNode(sid, i, j, laneXs[i], HEADER_H + j * ROW_H)
+            }
+            maxLen = maxOf(maxLen, p.skills.size)
+        }
+        val jobY = HEADER_H + maxLen * ROW_H + JOB_H / 2 + 30f
+        val jobs = paths.mapIndexed { i, p -> JobNode(p.job, i, laneXs[i], jobY) }
+        val w = MARGIN * 2 + paths.size * LANE_W
+        val h = jobY + JOB_H / 2 + MARGIN
+        return Layout(nodes, jobs, laneXs, w, maxOf(h, 700f))
+    }
 }
 
 /* ============== 知识网主屏 ============== */
@@ -130,7 +127,6 @@ fun NetScreen(vm: AppViewModel) {
     var skillFormId by rememberSaveable { mutableStateOf<String?>(null) }
     val context = LocalContext.current
 
-    // 系统级「移除动画」+ 应用内开关 → 双重尊重
     val systemMotionOff = remember {
         runCatching {
             Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
@@ -139,7 +135,6 @@ fun NetScreen(vm: AppViewModel) {
     val motionOn = !ui.reduceMotion && !systemMotionOff
 
     Column(Modifier.fillMaxSize()) {
-        // 路径筛选 chips
         Row(
             Modifier
                 .fillMaxWidth()
@@ -150,14 +145,14 @@ fun NetScreen(vm: AppViewModel) {
             FilterChip(
                 selected = activePath.isEmpty(),
                 onClick = { activePath = ""; focusSkill = null },
-                label = { Text("全部路径") },
+                label = { Text("全部") },
             )
             ui.effective.paths.forEach { p ->
                 FilterChip(
                     selected = activePath == p.id,
                     onClick = { activePath = if (activePath == p.id) "" else p.id; focusSkill = null },
                     label = {
-                        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Dot(parseHexColor(p.color), 8.dp)
                             Text(p.name, Modifier.padding(start = 6.dp))
                         }
@@ -165,7 +160,6 @@ fun NetScreen(vm: AppViewModel) {
                 )
             }
         }
-        // 搜索
         OutlinedTextField(
             value = query,
             onValueChange = { query = it; focusSkill = null },
@@ -222,7 +216,7 @@ fun NetScreen(vm: AppViewModel) {
                 ui = ui,
                 onOpenSkill = { sheetSkill = it },
                 onDelete = { vm.deleteRecord("skill", id); sheetSkill = null },
-                onDismiss = { sheetSkill = null; },
+                onDismiss = { sheetSkill = null },
                 onSetStatus = { st -> vm.setSkillStatus(id, st) },
                 onNoteChange = { vm.setSkillNote(id, it) },
                 onStartDate = { vm.setSkillStartDate(id, it) },
@@ -242,6 +236,7 @@ fun NetScreen(vm: AppViewModel) {
                 onDismiss = { sheetJob = null },
                 onSetStatus = { st -> vm.setJobStatus(id, st) },
                 onNoteChange = { vm.setJobNote(id, it) },
+                onEdit = null,
             )
         } else sheetJob = null
     }
@@ -256,7 +251,7 @@ fun NetScreen(vm: AppViewModel) {
     }
 }
 
-/* ============== 画布（单 Canvas 自绘：性能红线——手势只触发重绘不重组） ============== */
+/* ============== 画布（单 Canvas 自绘：手势只触发重绘不重组） ============== */
 
 @Composable
 fun NetCanvas(
@@ -271,12 +266,15 @@ fun NetCanvas(
     modifier: Modifier = Modifier,
 ) {
     val layout = remember(ui.effective) { NetLayout.build(ui.effective) }
-    var scale by remember { mutableFloatStateOf(0.6f) }
+    var scale by remember { mutableFloatStateOf(2f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var fitted by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(IntSize.Zero) }
 
-    // 呼吸脉冲（学习中/已学节点光晕）
+    val labelBg = MaterialTheme.colorScheme.background
+    val labelBorder = MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+    val nameColor = MaterialTheme.colorScheme.onSurface
+
     val pulseState: State<Float> = if (motionOn) {
         rememberInfiniteTransition(label = "pulse").animateFloat(
             0.35f, 1f,
@@ -286,11 +284,10 @@ fun NetCanvas(
     } else {
         remember { androidx.compose.runtime.mutableStateOf(1f) }
     }
-    // 选中路径连线流动
     val dashState: State<Float> = if (motionOn) {
         rememberInfiniteTransition(label = "dash").animateFloat(
-            0f, 60f,
-            infiniteRepeatable(tween(1500, easing = LinearEasing)),
+            0f, 88f,
+            infiniteRepeatable(tween(1300, easing = LinearEasing)),
             label = "dashA",
         )
     } else {
@@ -298,69 +295,100 @@ fun NetCanvas(
     }
 
     val textMeasurer = rememberTextMeasurer()
-    val labelStyle = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Bold)
-    val headerStyle = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
+    val nameStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium)
+    val headerStyle = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+    val subStyle = TextStyle(fontSize = 12.sp)
+    val numStyle = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold)
     val nameLayouts = remember(ui.effective) {
-        ui.effective.skills.mapValues { (_, s) ->
-            textMeasurer.measure(AnnotatedString(s.name), labelStyle)
-        }
+        ui.effective.skills.mapValues { (_, s) -> textMeasurer.measure(AnnotatedString(s.name), nameStyle) }
+    }
+    val headerLayouts = remember(ui.effective) {
+        ui.effective.paths.associate { p -> p.id to textMeasurer.measure(AnnotatedString(p.name), headerStyle) }
+    }
+    val periodLayouts = remember(ui.effective) {
+        ui.effective.paths.associate { p -> p.id to textMeasurer.measure(AnnotatedString(p.period), subStyle) }
     }
     val jobNameLayouts = remember(ui.effective) {
         ui.effective.jobs.mapValues { (_, j) ->
-            textMeasurer.measure(AnnotatedString(j.name), TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold))
+            textMeasurer.measure(AnnotatedString(j.name), TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Bold))
         }
     }
-    val headerLayouts = remember(ui.effective) {
-        NetLayout.CAT_X.keys.associateWith { cat ->
-            textMeasurer.measure(AnnotatedString(cat), headerStyle)
-        } + ("目标岗位" to textMeasurer.measure(AnnotatedString("目标岗位"), headerStyle))
-    }
-    val glyphCache = remember { HashMap<String, androidx.compose.ui.text.TextLayoutResult>() }
-    val dashPaint = remember { Paint() }
-    fun glyph(text: String): androidx.compose.ui.text.TextLayoutResult = glyphCache.getOrPut(text) {
-        textMeasurer.measure(AnnotatedString(text), TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold))
+    val glyphCache = remember { HashMap<String, TextLayoutResult>() }
+    fun glyph(text: String): TextLayoutResult = glyphCache.getOrPut(text) {
+        textMeasurer.measure(AnnotatedString(text), numStyle)
     }
 
-    // 搜索自动定位到第一个匹配节点（居中）
-    LaunchedEffect(query) {
+    fun laneOf(pathId: String): Int = ui.effective.paths.indexOfFirst { it.id == pathId }
+
+    // 选中路径 → 自动把该泳道平移到屏幕中央
+    LaunchedEffect(activePathId, fitted) {
+        if (!fitted || activePathId.isEmpty()) return@LaunchedEffect
+        val lane = laneOf(activePathId)
+        if (lane in layout.laneXs.indices) {
+            offset = offset.copy(x = canvasSize.width / 2f - layout.laneXs[lane] * scale)
+        }
+    }
+    // 搜索 → 居中第一个匹配节点
+    LaunchedEffect(query, fitted) {
         val q2 = query.trim().lowercase()
         if (q2.isBlank() || canvasSize == IntSize.Zero) return@LaunchedEffect
-        val first = ui.effective.skills.entries.firstOrNull { it.value.name.lowercase().contains(q2) } ?: return@LaunchedEffect
-        val pos = layout.pos[first.key] ?: return@LaunchedEffect
-        offset = Offset(canvasSize.width / 2f, canvasSize.height / 2f) - pos * scale
+        val node = layout.skillNodes.firstOrNull {
+            ui.effective.skills[it.skillId]?.name?.lowercase()?.contains(q2) == true
+        } ?: return@LaunchedEffect
+        offset = Offset(
+            canvasSize.width / 2f - node.x * scale,
+            canvasSize.height / 2f - node.y * scale,
+        )
     }
 
     fun hitTest(p: Offset): Pair<String, Boolean>? { // id, isJob
         val c = (p - offset) / scale
-        layout.jobRects.forEach { (id, r) -> if (r.inflate(6f).contains(c)) return id to true }
-        ui.effective.skills.keys.forEach { id ->
-            val pos = layout.pos[id] ?: return@forEach
-            if ((c - pos).getDistance() <= 26f) return id to false
+        layout.jobNodes.forEach { jn ->
+            val r = Rect(
+                jn.x - NetLayout.JOB_W / 2, jn.y - NetLayout.JOB_H / 2,
+                jn.x + NetLayout.JOB_W / 2, jn.y + NetLayout.JOB_H / 2,
+            )
+            if (r.inflate(8f).contains(c)) return jn.jobId to true
+        }
+        layout.skillNodes.forEach { n ->
+            if ((c - Offset(n.x, n.y)).getDistance() <= 36f) return n.skillId to false
         }
         return null
     }
 
     val q = query.trim().lowercase()
-    fun matches(id: String): Boolean {
+    fun matches(skillId: String): Boolean {
         if (q.isEmpty()) return true
-        val s = ui.effective.skills[id] ?: return false
+        val s = ui.effective.skills[skillId] ?: return false
         return s.name.lowercase().contains(q) || s.cat.lowercase().contains(q)
     }
 
-    val activePath = ui.effective.paths.firstOrNull { it.id == activePathId }
+    val activeLane = if (activePathId.isEmpty()) -1 else laneOf(activePathId)
     val focusOn = focusSkillId != null && ui.effective.skills.containsKey(focusSkillId)
     val focusPre = if (focusOn) (ui.effective.skills[focusSkillId]?.pre ?: emptyList()) else emptyList()
-    val focusDep = if (focusOn) ui.effective.skills.entries.filter { focusSkillId in it.value.pre }.map { it.key } else emptyList()
+    val focusDep = if (focusOn) {
+        ui.effective.skills.entries.filter { focusSkillId in it.value.pre }.map { it.key }
+    } else emptyList()
+
+    fun nodeAlpha(skillId: String, lane: Int): Float = when {
+        q.isNotEmpty() && !matches(skillId) -> 0.1f
+        focusOn && !(skillId == focusSkillId || focusPre.contains(skillId) || focusDep.contains(skillId)) -> 0.1f
+        activeLane >= 0 && lane != activeLane -> 0.12f
+        else -> 1f
+    }
+
+    val dashPaint = remember { Paint() }
 
     Canvas(
         modifier
             .fillMaxSize()
             .onSizeChanged { size: IntSize ->
                 canvasSize = size
-                if (!fitted && size.width > 0) {
+                if (!fitted && size.width > 0 && layout.laneXs.isNotEmpty()) {
                     fitted = true
-                    scale = (size.width / layout.W).coerceIn(0.35f, 1f)
-                    offset = Offset(0f, (size.height - layout.H * scale) / 2f)
+                    // 默认约两条泳道可见，首泳道居中
+                    scale = (size.width / (NetLayout.LANE_W * 2.05f)).coerceIn(0.5f, 2.6f)
+                    offset = Offset(size.width / 2f - layout.laneXs[0] * scale, 24f)
                 }
             }
             .pointerInput(layout) {
@@ -371,7 +399,7 @@ fun NetCanvas(
             }
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, _ ->
-                    val newScale = (scale * zoom).coerceIn(0.35f, 2.5f)
+                    val newScale = (scale * zoom).coerceIn(0.4f, 3.5f)
                     offset = centroid - (centroid - offset) * (newScale / scale)
                     scale = newScale
                     offset += pan
@@ -380,178 +408,135 @@ fun NetCanvas(
     ) {
         val pulse = pulseState.value
         val dash = dashState.value
+        if (layout.laneXs.isEmpty()) return@Canvas
 
-        fun drawDashedPath(path: Path, color: Color, strokeWidth: Float, phase: Float, alpha: Float, pattern: FloatArray = floatArrayOf(20f, 14f)) {
+        fun drawDashedLine(start: Offset, end: Offset, color: Color, strokeWidth: Float, phase: Float) {
             dashPaint.color = color
-            dashPaint.alpha = alpha
+            dashPaint.alpha = 1f
             dashPaint.style = PaintingStyle.Stroke
             dashPaint.strokeWidth = strokeWidth
-            dashPaint.pathEffect = PathEffect.dashPathEffect(pattern, phase)
-            drawContext.canvas.drawPath(path, dashPaint)
-        }
-        fun drawDashedCircle(center: Offset, radius: Float, color: Color, strokeWidth: Float, alpha: Float) {
-            dashPaint.color = color
-            dashPaint.alpha = alpha
-            dashPaint.style = PaintingStyle.Stroke
-            dashPaint.strokeWidth = strokeWidth
-            dashPaint.pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 4f), 0f)
-            drawContext.canvas.drawCircle(center, radius, dashPaint)
+            dashPaint.pathEffect = PathEffect.dashPathEffect(floatArrayOf(26f, 18f), phase)
+            dashPaint.strokeCap = StrokeCap.Round
+            drawContext.canvas.drawLine(start, end, dashPaint)
         }
 
         withTransform({ translate(offset.x, offset.y); this.scale(scale, scale, Offset.Zero) }) {
 
-            // ---- 连线 ----
-            val paths = ui.effective.paths
-            paths.forEach { p ->
-                val selected = p.id == activePathId
-                val dimmed = activePathId.isNotEmpty() && !selected
-                val baseColor = parseHexColor(p.color)
-                val lineColor = when {
-                    dimmed -> Color(0xFFCBD5E1).copy(alpha = 0.4f)
-                    selected -> baseColor
-                    else -> baseColor.copy(alpha = 0.55f)
+            // ---- 泳道表头：路径名 + 周期 ----
+            ui.effective.paths.forEachIndexed { lane, p ->
+                val laneAlpha = if (activeLane >= 0 && lane != activeLane) 0.15f else 1f
+                val x = layout.laneXs[lane]
+                val color = parseHexColor(p.color)
+                headerLayouts[p.id]?.let {
+                    drawText(it, color = color, topLeft = Offset(x - it.size.width / 2f, 34f), alpha = laneAlpha)
                 }
-                val strokeWidth = when { selected -> 4f; activePathId.isEmpty() -> 1.8f; else -> 1.2f }
-                val lineAlpha = when { selected -> 1f; activePathId.isEmpty() -> 0.32f; else -> 0.15f }
-                val nodes = p.skills + p.job
-                for (i in 0 until nodes.size - 1) {
-                    val a = layout.pos[nodes[i]] ?: continue
-                    val b = layout.pos[nodes[i + 1]] ?: continue
-                    val mx = (a.x + b.x) / 2
-                    val path = Path().apply {
-                        moveTo(a.x, a.y)
-                        cubicTo(mx, a.y, mx, b.y, b.x, b.y)
-                    }
+                periodLayouts[p.id]?.let {
+                    drawText(it, color = labelBorder, topLeft = Offset(x - it.size.width / 2f, 60f), alpha = laneAlpha * 0.9f)
+                }
+            }
+
+            // ---- 泳道连线（粗、明显）----
+            ui.effective.paths.forEachIndexed { lane, p ->
+                val selected = lane == activeLane
+                val laneAlpha = when {
+                    selected -> 1f
+                    activeLane >= 0 -> 0.1f
+                    else -> 0.8f
+                }
+                val color = parseHexColor(p.color)
+                val strokeW = if (selected) 9f else 6f
+                for (j in 0 until p.skills.size - 1) {
+                    val y1 = NetLayout.HEADER_H + j * NetLayout.ROW_H
+                    val y2 = NetLayout.HEADER_H + (j + 1) * NetLayout.ROW_H
+                    val x = layout.laneXs[lane]
                     if (selected && motionOn) {
-                        drawDashedPath(path, baseColor, strokeWidth, dash, lineAlpha)
+                        drawDashedLine(Offset(x, y1), Offset(x, y2), color, strokeW, dash)
                     } else {
-                        drawPath(path, lineColor, alpha = lineAlpha, style = Stroke(strokeWidth))
+                        drawLine(color, Offset(x, y1), Offset(x, y2), strokeWidth = strokeW, alpha = laneAlpha)
+                    }
+                }
+                // 末节点 → 岗位色块
+                if (p.skills.isNotEmpty()) {
+                    val lastY = NetLayout.HEADER_H + (p.skills.size - 1) * NetLayout.ROW_H
+                    val jobNode = layout.jobNodes.firstOrNull { it.lane == lane }
+                    if (jobNode != null) {
+                        drawLine(
+                            color, Offset(layout.laneXs[lane], lastY),
+                            Offset(jobNode.x, jobNode.y - NetLayout.JOB_H / 2),
+                            strokeWidth = strokeW, alpha = laneAlpha,
+                        )
                     }
                 }
             }
 
-            // ---- 聚焦模式的前置连线（紫色虚线） ----
-            if (focusOn) {
-                val fp = layout.pos[focusSkillId!!] ?: Offset.Zero
-                focusPre.forEach { preId ->
-                    val pp = layout.pos[preId] ?: return@forEach
-                    val mx = (pp.x + fp.x) / 2
-                    val path = Path().apply {
-                        moveTo(pp.x, pp.y)
-                        cubicTo(mx, pp.y, mx, fp.y, fp.x, fp.y)
-                    }
-                    drawDashedPath(path, Color(0xFF6366F1), 2f, 0f, 0.8f, floatArrayOf(8f, 6f))
-                }
-            }
-
-            // ---- 技能节点 ----
-            ui.effective.skills.forEach { (id, s) ->
-                val p = layout.pos[id] ?: return@forEach
-                val st = ui.skillDone[id]?.st ?: "none"
-                val inPath = activePath == null || activePath.skills.contains(id)
-                val focusRelated = !focusOn || id == focusSkillId || focusPre.contains(id) || focusDep.contains(id)
-                val alpha = when {
-                    q.isNotEmpty() && !matches(id) -> 0.12f
-                    focusOn && !focusRelated -> 0.12f
-                    activePathId.isNotEmpty() && !inPath -> 0.12f
-                    else -> 1f
-                }
-                if (alpha < 0.9f && q.isEmpty() && !focusOn) { /* 仍绘制，仅淡化 */ }
+            // ---- 技能节点 + 名称标签（标签带底色，避免被连线穿过/重叠）----
+            layout.skillNodes.forEach { n ->
+                val s = ui.effective.skills[n.skillId] ?: return@forEach
+                val st = ui.skillDone[n.skillId]?.st ?: "none"
+                val alpha = nodeAlpha(n.skillId, n.lane)
                 val fill = catColorFor(s.cat)
-                // 状态光晕（呼吸）
                 if (st != "none" && motionOn) {
-                    drawCircle(statusColorFor(st).copy(alpha = 0.35f * pulse), radius = 21f, center = p)
+                    drawCircle(statusColorFor(st).copy(alpha = 0.3f * pulse), radius = 30f, center = Offset(n.x, n.y))
                 }
-                drawCircle(fill, radius = NetLayout.NODE_R, center = p, alpha = alpha)
-                val stroke = when {
-                    focusOn && id == focusSkillId -> Stroke(3.5f)
-                    focusOn && focusPre.contains(id) -> Stroke(2.5f)
-                    focusOn && focusDep.contains(id) -> Stroke(2.5f)
-                    st == "learning" -> Stroke(3f)
-                    st == "done" -> Stroke(3f)
-                    else -> Stroke(2.2f)
+                nameLayouts[n.skillId]?.let { tl ->
+                    val pillW = tl.size.width + 18f
+                    val pillH = tl.size.height + 8f
+                    val pillTop = n.y + NetLayout.NODE_R + 6f
+                    drawRoundRect(
+                        color = labelBg,
+                        topLeft = Offset(n.x - pillW / 2f, pillTop),
+                        size = Size(pillW, pillH),
+                        cornerRadius = CornerRadius(8f, 8f),
+                        alpha = alpha,
+                    )
+                    drawRoundRect(
+                        color = labelBorder,
+                        topLeft = Offset(n.x - pillW / 2f, pillTop),
+                        size = Size(pillW, pillH),
+                        cornerRadius = CornerRadius(8f, 8f),
+                        alpha = alpha,
+                        style = Stroke(1f),
+                    )
+                    drawText(tl, color = nameColor, topLeft = Offset(n.x - tl.size.width / 2f, pillTop + 4f), alpha = alpha)
                 }
-                val strokeColor = when {
-                    focusOn && id == focusSkillId -> Color(0xFF6366F1)
-                    focusOn && focusPre.contains(id) -> Color(0xFF6366F1)
-                    focusOn && focusDep.contains(id) -> Color(0xFF0EA5E9)
-                    st == "learning" -> statusColorFor("learning")
-                    st == "done" -> statusColorFor("done")
-                    else -> Color.White
+                drawCircle(fill, radius = NetLayout.NODE_R, center = Offset(n.x, n.y), alpha = alpha)
+                drawText(glyph("${n.order + 1}"), color = Color.White, topLeft = Offset(n.x - 7f, n.y - 9f), alpha = alpha)
+                val ring = when {
+                    focusOn && n.skillId == focusSkillId -> Color(0xFF6366F1) to 4.5f
+                    focusOn && focusPre.contains(n.skillId) -> Color(0xFF6366F1) to 3.5f
+                    focusOn && focusDep.contains(n.skillId) -> Color(0xFF0EA5E9) to 3.5f
+                    st == "learning" -> statusColorFor("learning") to 4.5f
+                    st == "done" -> statusColorFor("done") to 4.5f
+                    else -> Color.White to 3f
                 }
-                val dashRing = focusOn && (focusPre.contains(id) || focusDep.contains(id))
-                if (dashRing) {
-                    drawDashedCircle(p, NetLayout.NODE_R, strokeColor, 2.5f, alpha)
-                } else {
-                    drawCircle(strokeColor, radius = NetLayout.NODE_R, center = p, alpha = alpha, style = stroke)
-                }
-                // 序号/难度
-                val numText = if (activePath?.skills?.contains(id) == true) {
-                    "${(activePath.skills.indexOf(id) + 1)}"
-                } else "${s.diff}"
-                drawText(glyph(numText), color = Color.White, topLeft = Offset(p.x - 5f, p.y - 8f), alpha = alpha)
-                // 状态角标
+                drawCircle(ring.first, radius = NetLayout.NODE_R, center = Offset(n.x, n.y), alpha = alpha, style = Stroke(ring.second))
                 if (st == "done") {
-                    drawText(glyph("✓"), color = Color(0xFF10B981), topLeft = Offset(p.x + 6f, p.y + 6f), alpha = alpha)
-                } else if (st == "learning") {
-                    drawCircle(Color(0xFFF59E0B), radius = 5f, center = Offset(p.x + 10f, p.y + 10f), alpha = alpha)
-                    drawCircle(Color.White, radius = 5f, center = Offset(p.x + 10f, p.y + 10f), alpha = alpha, style = Stroke(1.6f))
-                }
-                // 名称
-                nameLayouts[id]?.let {
-                    drawText(it, color = Color(0xFF334155), topLeft = Offset(p.x + 22f, p.y - 8f), alpha = alpha)
+                    drawText(glyph("✓"), color = Color(0xFF10B981), topLeft = Offset(n.x + 8f, n.y + 6f), alpha = alpha)
                 }
             }
 
             // ---- 岗位节点 ----
-            ui.effective.jobs.forEach { (id, j) ->
-                val r = layout.jobRects[id] ?: return@forEach
-                val st = ui.jobState[id]?.st ?: "none"
-                val inPath = activePathId.isEmpty() || activePath?.job == id
-                val alpha = when {
-                    q.isNotEmpty() && !(j.name.lowercase().contains(q)) -> 0.12f
+            layout.jobNodes.forEach { jn ->
+                val j = ui.effective.jobs[jn.jobId] ?: return@forEach
+                val st = ui.jobState[jn.jobId]?.st ?: "none"
+                val laneAlpha = when {
+                    q.isNotEmpty() && !j.name.lowercase().contains(q) -> 0.12f
+                    activeLane >= 0 && jn.lane != activeLane -> 0.12f
                     focusOn -> 0.25f
-                    activePathId.isNotEmpty() && !inPath -> 0.12f
                     else -> 1f
                 }
                 val fill = parseHexColor(j.color, catColorFor("硬件"))
-                drawRoundRect(
-                    color = fill,
-                    topLeft = Offset(r.left, r.top),
-                    size = androidx.compose.ui.geometry.Size(r.width, r.height),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f, 10f),
-                    alpha = alpha,
-                )
+                val topLeft = Offset(jn.x - NetLayout.JOB_W / 2, jn.y - NetLayout.JOB_H / 2)
+                drawRoundRect(fill, topLeft = topLeft, size = Size(NetLayout.JOB_W, NetLayout.JOB_H), cornerRadius = CornerRadius(14f, 14f), alpha = laneAlpha)
                 val strokeC = when (st) {
                     "learning" -> Color(0xFFF59E0B)
                     "done" -> Color(0xFF10B981)
                     else -> Color.White
                 }
-                drawRoundRect(
-                    color = strokeC,
-                    topLeft = Offset(r.left, r.top),
-                    size = androidx.compose.ui.geometry.Size(r.width, r.height),
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(10f, 10f),
-                    alpha = alpha,
-                    style = Stroke(if (st == "none") 2.2f else 4f),
-                )
-                jobNameLayouts[id]?.let {
-                    drawText(
-                        it, color = Color.White,
-                        topLeft = Offset(r.center.x - it.size.width / 2f, r.center.y - it.size.height / 2f),
-                        alpha = alpha,
-                    )
+                drawRoundRect(strokeC, topLeft = topLeft, size = Size(NetLayout.JOB_W, NetLayout.JOB_H), cornerRadius = CornerRadius(14f, 14f), alpha = laneAlpha, style = Stroke(if (st == "none") 3f else 5f))
+                jobNameLayouts[jn.jobId]?.let {
+                    drawText(it, color = Color.White, topLeft = Offset(jn.x - it.size.width / 2f, jn.y - it.size.height / 2f), alpha = laneAlpha)
                 }
-                if (st == "done") {
-                    drawText(glyph("✓"), color = Color(0xFF10B981), topLeft = Offset(r.right - 22f, r.top - 4f), alpha = alpha)
-                }
-            }
-
-            // ---- 分类表头 ----
-            headerLayouts.forEach { (title, tl) ->
-                val x = if (title == "目标岗位") NetLayout.JOB_X else NetLayout.CAT_X[title] ?: return@forEach
-                val color = if (title == "目标岗位") Color(0xFF475569) else catColorFor(title)
-                drawText(tl, color = color, topLeft = Offset(x - tl.size.width / 2f, 10f))
             }
         }
     }
