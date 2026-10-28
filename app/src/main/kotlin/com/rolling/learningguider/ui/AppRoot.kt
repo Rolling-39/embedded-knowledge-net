@@ -1,5 +1,7 @@
 package com.rolling.learningguider.ui
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -65,12 +68,17 @@ private fun AppRootContent(vm: AppViewModel) {
         it.name == backStackEntry?.destination?.route
     } ?: TopDestination.NET
 
+    // 页面切换：按 Tab 顺序决定进出方向（右进左出 / 左进右出），弹簧驱动
+    val enter = spring<androidx.compose.ui.unit.IntOffset>(dampingRatio = 0.88f, stiffness = 420f)
+    val fade = tween<Float>(200, easing = FastOutSlowInEasing)
+
     Scaffold(
         bottomBar = {
             NavigationBar {
                 TopDestination.entries.forEach { dest ->
+                    val selected = dest == current
                     NavigationBarItem(
-                        selected = dest == current,
+                        selected = selected,
                         onClick = {
                             navController.navigate(dest.name) {
                                 popUpTo(navController.graph.findStartDestination().id) { saveState = true }
@@ -79,7 +87,12 @@ private fun AppRootContent(vm: AppViewModel) {
                             }
                         },
                         icon = { Icon(dest.icon, contentDescription = dest.label) },
-                        label = { Text(dest.label) },
+                        label = {
+                            Text(
+                                dest.label,
+                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+                            )
+                        },
                     )
                 }
             }
@@ -90,13 +103,19 @@ private fun AppRootContent(vm: AppViewModel) {
             startDestination = TopDestination.NET.name,
             modifier = Modifier.padding(padding),
             enterTransition = {
-                fadeIn(tween(220)) + slideInHorizontally(tween(220)) { it / 8 }
+                val from = TopDestination.entries.indexOfFirst { it.name == initialState.destination.route }
+                val to = TopDestination.entries.indexOfFirst { it.name == targetState.destination.route }
+                val dir = if (to >= from) 1 else -1
+                fadeIn(fade) + slideInHorizontally(enter) { full -> dir * (full / 7) }
             },
-            exitTransition = { fadeOut(tween(160)) },
-            popEnterTransition = { fadeIn(tween(220)) },
-            popExitTransition = {
-                fadeOut(tween(160)) + slideOutHorizontally(tween(160)) { it / 8 }
+            exitTransition = {
+                val from = TopDestination.entries.indexOfFirst { it.name == initialState.destination.route }
+                val to = TopDestination.entries.indexOfFirst { it.name == targetState.destination.route }
+                val dir = if (to >= from) 1 else -1
+                fadeOut(tween(160)) + slideOutHorizontally(tween(260, easing = FastOutSlowInEasing)) { full -> -dir * (full / 14) }
             },
+            popEnterTransition = { fadeIn(fade) },
+            popExitTransition = { fadeOut(tween(160)) },
         ) {
             composable(TopDestination.NET.name) { NetScreen(vm) }
             composable(TopDestination.LIBRARY.name) { LibraryScreen(vm) }

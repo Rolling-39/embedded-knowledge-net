@@ -41,6 +41,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.Velocity
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 
 /* ============== 颜色（与网页版一致的分类/层级色系） ============== */
 
@@ -278,16 +285,43 @@ fun CategoryProgressRow(cat: String, done: Int, learning: Int, total: Int) {
 /* ============== 弹层滚动容器 ============== */
 
 /**
- * BottomSheet 内容容器：LazyColumn 单 item 方案。
- * 直接用 Column+verticalScroll 嵌套在 ModalBottomSheet 里会在内容较长时
- * 与 sheet 的拖拽关闭手势发生嵌套滚动冲突（反复抽搐），LazyColumn 可正确消费滚动。
+ * BottomSheet 内容容器。
+ *
+ * 抽搐根因（两个叠加）：
+ * 1. LazyColumn 滚到底后，剩余下拉会冒泡给 ModalBottomSheet 的拖拽；弹层被拖下一点、
+ *    松手回弹，而手指还在动 → 手势反复易主，页面抖动。
+ * 2. 列表自带的过度滚动拉伸特效会和弹层拖拽位移互相拉扯。
+ *
+ * 处理：底部越界时由列表侧把剩余手势全部吃掉（弹层不再被内容拖动，只能拖顶部把手
+ * 或点遮罩/返回键关闭）；同时关闭列表过度滚动特效。
  */
 @Composable
 fun SheetScroll(maxHeight: Dp = 660.dp, content: @Composable () -> Unit) {
+    val listState = rememberLazyListState()
+    val guard = remember(listState) {
+        object : NestedScrollConnection {
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                // 向上越界的剩余位移（已到底）不要传给弹层：弹层被顶起来会立刻回弹，表现为抽搐
+                return if (available.y < 0f) Offset(0f, available.y) else Offset.Zero
+            }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                // 惯性甩到内容尽头时，剩余速度原本会交给弹层做收合动画 → 被带下去再回弹。
+                // 这里全部吃掉：内容区的甩动只影响内容，不会带动弹层。
+                return available
+            }
+        }
+    }
     LazyColumn(
         Modifier
             .fillMaxWidth()
-            .heightIn(max = maxHeight),
+            .heightIn(max = maxHeight)
+            .nestedScroll(guard),
+        state = listState,
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 32.dp),
     ) {
         item {

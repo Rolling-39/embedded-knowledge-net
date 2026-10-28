@@ -16,8 +16,8 @@ android {
         applicationId = "com.rolling.learningguider"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.5.0"
+        versionCode = 7
+        versionName = "1.0.0"
     }
 
     val keystoreProps = rootProject.file("keystore.properties")
@@ -29,11 +29,19 @@ android {
                 storePassword = props.getProperty("storePassword")
                 keyAlias = props.getProperty("keyAlias")
                 keyPassword = props.getProperty("keyPassword")
+                // 发布包同时打 v2/v3 签名：v3 支持将来换密钥，Android 9+ 优先用它校验
+                enableV1Signing = false
+                enableV2Signing = true
+                enableV3Signing = true
             }
         }
     }
 
     buildTypes {
+        // 调试包同样用正式 keystore 签名：保证与已装 release 包可覆盖升级（不丢本机进度数据）
+        debug {
+            if (keystoreProps.exists()) signingConfig = signingConfigs.getByName("release")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

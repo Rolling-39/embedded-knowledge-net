@@ -10,3 +10,5 @@ captures/
 *.keystore
 !debug.keystore
 keystore.properties
+dist/
+.kotlin/
