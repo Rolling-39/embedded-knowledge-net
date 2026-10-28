@@ -34,7 +34,7 @@ Android 端离线知识工作台，Jetpack Compose 全自绘。所有数据存�
 
 ## 安装
 
-从 [Releases](../../releases) 下载 `LearningGuider-1.0.0.apk`（约 2.3 MB，要求 Android 8.0+），传到手机直接安装。
+从 [Releases](https://github.com/Rolling-39/embedded-knowledge-net/releases) 下载 `LearningGuider-1.0.0.apk`（约 2.3 MB，要求 Android 8.0+），传到手机直接安装。
 
 - 签名：APK Signature Scheme v2 + v3
 - 首次启动会把内置知识库（81 技能 / 16 岗位 / 16 路线 / 6 类资源）导入本地数据库，之后完全离线
